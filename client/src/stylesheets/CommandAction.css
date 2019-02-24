@@ -1,0 +1,13 @@
+.CommandAction{
+    width: 45vw;
+    background-color: grey;
+    color: white;
+    border: 1px solid white;
+}
+
+.content{
+    height: 30vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
