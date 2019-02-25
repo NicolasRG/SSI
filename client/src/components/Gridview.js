@@ -20,24 +20,17 @@ const inputs = [
 
 
 class Gridview extends Component{
-
-    constructor(props){
-        super(props);
-        this.state = {
-
-        }
-        this.list = inputs.map((d,i)=>{
-            const click = (e)=>{
-                props.socket.emit('Command',  {id: d.id, name: d.name})
-            }
-            return <CommandAction name = {d.name} onClick = {click}/>
-        })
-    }
     
     
     render(){
+         let list = inputs.map((d,i)=>{
+            const click = (e)=>{
+                this.props.socket.emit('Command',  { player:this.props.player , id: d.id, name: d.name, });//can cause a ddos attack deal later
+            }
+            return <CommandAction name = {d.name} onClick = {click} key ={d.id}/>
+        })
         return <div id="Gridview">
-                {this.list}
+                {list}
          </div>
 
     }

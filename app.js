@@ -49,10 +49,10 @@ io.on('connection', (socket)=>{
     //setTimeout(() => socket.disconnect(true), 60000);
     
     //create player and assign it to ship, test purposes only 
-    const newplayer = new Player(socket.id, null);
+    const newplayer = new Player(socket, null);
     if(tship == null){
-        tship = new Ship('temproom', newplayer.name, 'user created ship name');
-        console.log(tship);
+        tship = new Ship('temproom', newplayer.name, 'user created ship name', io);
+        console.log(tship.name);
     }
 
     tship.addPlayer(newplayer);
@@ -63,7 +63,7 @@ io.on('connection', (socket)=>{
 const onNewPlayerConnect=(socket, newplayer)=>{
     console.log("New player "+ newplayer.name +" added ! \n \t Added to ship : "+ tship.roomname);
 
-    //end of ship
+    //end of ship, work on thi sas needed
     socket.on('disconnect', (reason) => {
         console.log(reason + ": "+ socket.id);
         if(!tship.inPlay){
@@ -73,7 +73,7 @@ const onNewPlayerConnect=(socket, newplayer)=>{
                 tship = null;
                 console.log( "Ship "+ tship); 
             }
-        }else{//get rid of this
+        }else{
             tship.removePostPlayer(newplayer);
             if(tship.isPostEmpty()){
                 console.log("Ship is empty, will be deleted");
@@ -93,9 +93,13 @@ const onNewPlayerConnect=(socket, newplayer)=>{
         console.log("Component rendered a container " +  socket.id);
     });
     
-    socket.on('Command', (e)=>{
-        console.log(e);
-        io.emit('shipMsg', {msg: newplayer.name + " did action " + e.name});
+    socket.on('Command', (cmd)=>{
+        console.log(cmd);
+        io.emit('shipMsg', {msg: newplayer.name + " did action " + cmd.name});
+        //validate the move in the game
+        if(tship.inPlay){
+            tship.removeCommand(cmd.player, cmd.id);
+        }
     });
 
     socket.on("start_game", (e)=>{
