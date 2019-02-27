@@ -5,13 +5,42 @@ import '../stylesheets/DialogBox.css';
  */
 class DialogBox extends Component{
 
+    constructor(props){
+        super(props);
+        this.state = {
+            personalMsg: "",
+            shipMsg: ""
+        }
+    }
+
+    componentDidMount(){
+        this.props.socket.on('personalMsg', (d)=>{
+            this.setState({
+                personalMsg : d.msg,
+            });
+         });
+ 
+         this.props.socket.on('shipMsg', (d)=>{
+            this.setState({
+                shipMsg : d.msg,
+            });
+         });
+
+         this.props.socket.on('onShipCmd',(d)=>{
+            this.setState({
+                    shipMsg: d.msg,
+            })
+        });
+         
+    }
+
     render(){
         return <div id= "DialogBox">
                     <div>
-                        {this.props.shipMsg}    
+                        {this.state.shipMsg}    
                     </div>
                     <div>
-                        {this.props.personalMsg}
+                        {this.state.personalMsg}
                     </div>
             </div>
     }

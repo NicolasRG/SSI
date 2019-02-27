@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import "../stylesheets/Container.css"
 //import react components
-import DialogBox from './DialogBox.js';
-import Gridview from './Gridview.js';
+import InShip from './InShip.js';
+import OpenRoomView from './OpenRoomView.js';
+import Rooms from './Rooms.js';
+import WaitingRoom from './WaitingRoom.js';
 
 
 
@@ -16,29 +18,34 @@ class Container extends Component{
             personalMsg : "",
             shipMsg : "",
             cmdHolder : null,
+            stage : "start_menu",// start_menu, join_room, waiting_room, game_room 
         }
-        this.personalMsg = "";
-        this.shipMsg = "";
+        
         this.cmdHolder = null; //may not need
+        this.gameStage = this.gameStage.bind(this);
     }
 
+    //make this chronological based on the the stage of creating game
     componentDidMount(){
-        this.props.socket.on('personalMsg', (d)=>{
+        
+        this.props.socket.on("onPlayerInit", (e)=>{
             this.setState({
-                personalMsg : d.msg,
-            });
-         });
- 
-         this.props.socket.on('shipMsg', (d)=>{
+                player: e.player,
+                stage : "join_room" 
+            })
+        })
+
+        this.props.socket.on("onRoomInit", (e)=>{
             this.setState({
-                shipMsg : d.msg,
-            });
-         })
-         
+                stage : "waiting_room",
+                player : e.player, 
+            })
+        });
+
         this.props.socket.on('onGameInit',(d)=>{
-            this.setState({player : d.playerState,
-                shipMsg: "Game has Started",
-                personalMsg: "",    
+            this.setState({
+                player : d.playerState,
+                stage : "game_room" 
             });
 
             console.log(d.playerState);
@@ -56,16 +63,13 @@ class Container extends Component{
         */
 
         this.props.socket.on("onPersonalCMD", (d)=>{ 
-                this.setState({
+            this.setState({
                     cmdHolder: d, 
-            })
+            });
+
             this.cmdHolder = d;
-                console.log(d);
+            console.log(d);
         });
-
-        //need a function that also listens for when a cmd is validated and 
-
-
     }
 
     testClick(e){
@@ -84,17 +88,25 @@ class Container extends Component{
         if(id === this.state.cmdHolder.id){
             this.props.socket.emit('Command',  {id: this.id, name: this.name});
         }
-        //console.log(id, this.cmdHolder.id);
+    }
+
+    gameStage(){
+            if( this.state.stage === "start_menu"){
+                return <OpenRoomView socket = {this.props.socket}/>
+            }else if(this.state.stage === "join_room"){
+                return <Rooms socket = {this.props.socket} player={this.state.player}/>
+            }else if(this.state.stage === "waiting_room"){
+                return <WaitingRoom socket = {this.props.socket} player={this.state.player}/>
+            }else if(this.state.stage === "game_room"){
+                return <InShip socket={this.props.socket} player={this.state.player}/>
+            }
     }
 
 
-
     render(){
+        const activeScreen = this.gameStage();
         return <div id = "Container">
-                <DialogBox personalMsg = {this.state.personalMsg} shipMsg = {this.state.shipMsg}/>
-                <Gridview socket = {this.props.socket} player={this.state.player} />
-                <button onClick={(e)=>this.testClick(e)}> Test Start</button>
-                <button onClick={(e)=>this.onDevClick(e)}> Gen a Command</button>
+                {activeScreen}
         </div>
     }
 }

@@ -49,19 +49,56 @@ io.on('connection', (socket)=>{
     //setTimeout(() => socket.disconnect(true), 60000);
     
     //create player and assign it to ship, test purposes only 
-    const newplayer = new Player(socket, null);
-    if(tship == null){
-        tship = new Ship('temproom', newplayer.name, 'user created ship name', io);
-        console.log(tship.name);
-    }
+    
+   let newPlayer; 
+  
+    /**
+     * this is the start off ever client side and assume that a name is all you need to create
+     * a ship and a player
+     */
+    socket.on("nameSubmit",(e)=>{
+        console.log(e)
+        newplayer = new Player(socket, e.name);
 
-    tship.addPlayer(newplayer);
-    onNewPlayerConnect(socket, newplayer);
+        socket.emit('onPlayerInit',{ 
+           player : { name : newplayer.name, 
+            card : null,
+            id : null,
+            creator: null,} 
+        });
+    });
+    /**
+     * the point of this is to join a create room
+     */
+    socket.on("joinRoom", (e)=>{
+        if(tship == null){
+            tship = new Ship('temproom', newplayer.socket.id, 'NewTempShip', io);
+            console.log(tship.name);
+        }
+        tship.addPlayer(newplayer);
+        onNewPlayerConnect(socket, newplayer);
+    })
+    /**
+     * create a room
+     */
+    socket.on("createRoom", (e)=>{
+        console.log("tried to create a room");
+    });
+
+    
    
 })
 
 const onNewPlayerConnect=(socket, newplayer)=>{
     console.log("New player "+ newplayer.name +" added ! \n \t Added to ship : "+ tship.roomname);
+    
+    //On player object being made with the ship
+    socket.emit('onRoomInit',{ 
+        player : { name : newplayer.name, 
+            card : null,
+            id : newplayer.socket.id,
+            creator: tship.creator}// so need  
+    });
 
     //end of ship, work on thi sas needed
     socket.on('disconnect', (reason) => {
@@ -85,7 +122,6 @@ const onNewPlayerConnect=(socket, newplayer)=>{
 
     //test events for socketio calls
     socket.on('hello', (e)=>{
-        socket.emit( 'personalMsg', {msg: "Welcome "+newplayer.name});
         io.emit('shipMsg', {msg: newplayer.name +" just joined"});
     });
     
@@ -111,6 +147,7 @@ const onNewPlayerConnect=(socket, newplayer)=>{
         console.log("Generate a command");
         tship.commandAssigner();
     });
+    
     
 
 
