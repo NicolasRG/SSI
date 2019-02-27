@@ -145,7 +145,8 @@ const onNewPlayerConnect=(socket, newplayer)=>{
 
     socket.on('dev_gen', (e)=>{
         console.log("Generate a command");
-        tship.commandAssigner();
+        //tship.commandAssigner();
+        tship.publicCreateCommand();
     });
     
     
