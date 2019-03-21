@@ -20,7 +20,7 @@ class WaitingRoom extends Component{
 
     render(){
         return <div id="WaitingRoom">
-                Everythings pointless
+                Waiting on everyone to join
                 { (this.props.player.creator === this.props.player.id) && 
                     <button onClick= {(e)=>this.startClick(e)}> Start Game</button>}
                 <button> Leave game </button>

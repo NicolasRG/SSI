@@ -4,30 +4,42 @@ import '../stylesheets/Rooms.css';
 class Room extends Component{
     constructor(props){
         super(props);
-
-        this.state = {
-            list : ["NewTempShip"]
-        }
-
         this.mapRooms = this.mapRooms.bind(this);
-
+        this.state = {
+            selected: null,
+        }
+        this.items = null;
     }
 
-    mapRooms(){
-        const items =  this.state.list.map((d,i)=>{
-            return <li key = {"room"+i}> d </li>
-        })
-        return <ul>{items}</ul>
-    }
     
     //uhuh wtf never thoguht about creating rooms
     onCreate(){
-        this.props.socket.emit("createRoom", {name: this.props.player, room: "NewTempShip"});
-        alert("Yup, this does nothing");
+        this.props.socket.emit("createRoom", {name: this.props.player, room: this.props.player.name+" room"});
     }
 
     onJoin(){
         this.props.socket.emit("joinRoom", {name: this.props.player.name, room: "NewTempShip"});
+    }
+
+    //just keep a state of the list of rooms
+    onClickRoom(e,name, id){
+    
+        this.setState({
+            selected : name,
+        });
+    }
+
+    
+    mapRooms(){
+        console.log(this.props.roomlist);
+        if(Object.entries(this.props.roomlist).length === 0 && Object.constructor){
+            return <div> Empty </div>
+        
+        }
+        this.items =  this.props.roomlist.map((d,i)=>{
+            return <li id ={"room"+i} key = {"room"+i} onClick={(e)=>this.onClickRoom(e,d,i)}> {d} </li>
+        })
+        return <ul>{this.items}</ul>
     }
 
     render(){
@@ -42,5 +54,7 @@ class Room extends Component{
     }
 
 }
+
+
 
 export default Room;

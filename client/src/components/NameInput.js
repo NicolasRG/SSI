@@ -34,7 +34,7 @@ class NameInput extends Component{
                 <form onSubmit={(e)=>this.onSubmitName(e)}>
                     <input 
                         type="text" 
-                        autocomplete= "off" 
+                        autoComplete= "off" 
                         value = {this.state.name}
                         onChange = {(e)=>this.onInput(e)}
                         onSubmit = {(e)=>this.onSubmitName(e)}
