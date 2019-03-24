@@ -6,7 +6,7 @@ const router = express.Router();
 const Ship = require('./lib/ship.js');
 const Player = require('./lib/player.js');
 let io;
-let tship = null;
+let shipMap = new Map();
 
 //get different routes
 const testAPI = require("./routes/testAPI.js");
@@ -57,65 +57,87 @@ io.on('connection', (socket)=>{
      * a ship and a player
      */
     socket.on("nameSubmit",(e)=>{
-        console.log(e)
-        newplayer = new Player(socket, e.name);
-
-        socket.emit('onPlayerInit',{ 
-           player : { name : newplayer.name, 
-            card : null,
-            id : null,
-            creator: null,} 
+        //may need to change later on to some global map but for small use it should be fine
+        const roomnames = [];
+        shipMap.forEach((value,key)=>{
+            roomnames.push(key);
+            //console.log(key,":  this is the key");
         });
+        newPlayer = new Player(socket, e.name);
+        const obj = { 
+            player : { name : newPlayer.name, 
+             card : null,
+             id : null,
+             creator: null},
+            itter : roomnames
+         }
+
+         console.log(obj, "sending room list");
+        socket.emit('onPlayerInit',obj);
+
     });
     /**
      * the point of this is to join a create room
      */
     socket.on("joinRoom", (e)=>{
-        if(tship == null){
-            tship = new Ship('temproom', newplayer.socket.id, 'NewTempShip', io);
+        /*if(tship == null){
             console.log(tship.name);
         }
-        tship.addPlayer(newplayer);
-        onNewPlayerConnect(socket, newplayer);
+        tship.addPlayer(newPlayer);
+        onNewPlayerConnect(socket, newPlayer, newPlayer.socket.id);*/
+        console.log(e);
+        shipMap.get(e.roomname).addPlayer(newPlayer);//not getting the correct room back >?
+        onNewPlayerConnect(socket, newPlayer, e.roomname);
     })
     /**
      * create a room
      */
     socket.on("createRoom", (e)=>{
-        console.log("tried to create a room");
-    });
+        //implement a way to let the server assigna name based on the user names
+        if(!shipMap.get(e.name)== undefined){
+            socket.emit("createError", {msg: "somethig went wrong"});
+            console.log("Incorrect createroom error");
+            return;
+        }
 
-    
+        const tempShip = new Ship( e.room, newPlayer.socket.id, e.room, io);
+        tempShip.addPlayer(newPlayer);
+        shipMap.set( tempShip.roomname ,tempShip);
+        console.log(tempShip, "Created ship");
+        onNewPlayerConnect(socket, newPlayer, tempShip.roomname);
+    });
    
 })
 
-const onNewPlayerConnect=(socket, newplayer)=>{
-    console.log("New player "+ newplayer.name +" added ! \n \t Added to ship : "+ tship.roomname);
+//figure out how to dimplement this 
+const onNewPlayerConnect=(socket, newplayer, shipKey)=>{
+    console.log("New player "+ newplayer.name +" added ! \n \t Added to ship : "+ shipKey);
     
     //On player object being made with the ship
     socket.emit('onRoomInit',{ 
         player : { name : newplayer.name, 
             card : null,
             id : newplayer.socket.id,
-            creator: tship.creator}// so need  
+            creator: shipMap.get(shipKey).creator}// so need  
     });
 
     //end of ship, work on thi sas needed
     socket.on('disconnect', (reason) => {
         console.log(reason + ": "+ socket.id);
-        if(!tship.inPlay){
-            tship.removePrePlayer(newplayer);
-            if(tship.isPreEmpty()){
+        if(!shipMap.get(shipKey).inPlay){
+            shipMap.get(shipKey).removePrePlayer(newplayer);
+            if(shipMap.get(shipKey).isPreEmpty()){
                 console.log("Ship is empty, will be deleted");
-                tship = null;
-                console.log( "Ship "+ tship); 
+                shipMap.delete(shipKey);
+                console.log( "Ship "+ shipMap.get(shipKey)); 
             }
         }else{
-            tship.removePostPlayer(newplayer);
-            if(tship.isPostEmpty()){
+            shipMap.get(shipKey).removePostPlayer(newplayer);
+            if(shipMap.get(shipKey).isPostEmpty()){
                 console.log("Ship is empty, will be deleted");
-                tship = null;
-                console.log( "Ship "+ tship); 
+                shipMap.get(shipKey).onDelete();
+                shipMap.delete(shipKey);
+                console.log( "Ship "+ shipMap.get(shipKey)); 
             }
         }
       });
@@ -133,23 +155,22 @@ const onNewPlayerConnect=(socket, newplayer)=>{
         console.log(cmd);
         io.emit('shipMsg', {msg: newplayer.name + " did action " + cmd.name});
         //validate the move in the game
-        if(tship.inPlay){
-            tship.removeCommand(cmd.player, cmd.id);
+        if(shipMap.get(shipKey).inPlay){
+            shipMap.get(shipKey).removeCommand(cmd.player, cmd.id);
         }
     });
 
     socket.on("start_game", (e)=>{
         console.log("Game has started, intialize the ship");
-        tship.startGamePhase();
+        shipMap.get(shipKey).startGamePhase();
     });
 
     socket.on('dev_gen', (e)=>{
         console.log("Generate a command");
         //tship.commandAssigner();
-        tship.publicCreateCommand();
+        shipMap.get(shipKey).publicCreateCommand();
     });
     
-    
-
-
 }
+
+//function to a list of room names

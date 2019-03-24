@@ -18,17 +18,21 @@ class Room extends Component{
     }
 
     onJoin(){
-        this.props.socket.emit("joinRoom", {name: this.props.player.name, room: "NewTempShip"});
+        if(this.state.selected == null){
+            alert("No room selected");
+            return;
+        }
+        this.props.socket.emit("joinRoom", {name: this.props.player.name, room: this.state.selected});
     }
 
     //just keep a state of the list of rooms
     onClickRoom(e,name, id){
-    
         this.setState({
             selected : name,
         });
+        console.log(this.state.selected);
     }
-
+   
     
     mapRooms(){
         console.log(this.props.roomlist);
