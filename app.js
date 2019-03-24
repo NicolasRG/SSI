@@ -86,8 +86,8 @@ io.on('connection', (socket)=>{
         tship.addPlayer(newPlayer);
         onNewPlayerConnect(socket, newPlayer, newPlayer.socket.id);*/
         console.log(e);
-        shipMap.get(e.roomname).addPlayer(newPlayer);//not getting the correct room back >?
-        onNewPlayerConnect(socket, newPlayer, e.roomname);
+        shipMap.get(e.room).addPlayer(newPlayer);//not getting the correct room back >?
+        onNewPlayerConnect(socket, newPlayer, e.room);
     })
     /**
      * create a room

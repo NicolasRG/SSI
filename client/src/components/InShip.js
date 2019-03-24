@@ -20,7 +20,7 @@ class InShip extends Component{
         return <div id = "InShip">
                 <DialogBox socket={this.props.socket}/>
                 <Gridview socket={this.props.socket} player={this.props.player}/>
-                <button onClick={(e)=>this.onDevClick(e)}> Gen a Command</button>
+                {/*<button onClick={(e)=>this.onDevClick(e)}> Gen a Command</button>*/}
             </div>
     }
 

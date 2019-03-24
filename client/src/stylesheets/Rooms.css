@@ -1,3 +1,40 @@
-#Room{
-    
+#Rooms{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px;
+}
+
+.nonActiveRoom{
+}
+
+.activeRoom{
+   
+}
+
+.room{
+    font-size: .9em;
+    background-color: aquamarine;
+    color: black;
+    text-align: left;
+    text-indent: 5px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.openRooms{
+    border: 1px solid black;
+    background-color: white; 
+    width: 100%;    
+}
+
+.joinButton{
+    height: 50%;
+    overflow: hidden;
+}
+
+.createButton{
+    width: 100%;
 }

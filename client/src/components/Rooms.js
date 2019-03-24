@@ -14,15 +14,11 @@ class Room extends Component{
     
     //uhuh wtf never thoguht about creating rooms
     onCreate(){
-        this.props.socket.emit("createRoom", {name: this.props.player, room: this.props.player.name+" room"});
+        this.props.socket.emit("createRoom", {name: this.props.player, room: this.props.player.name});
     }
 
-    onJoin(){
-        if(this.state.selected == null){
-            alert("No room selected");
-            return;
-        }
-        this.props.socket.emit("joinRoom", {name: this.props.player.name, room: this.state.selected});
+    onJoin(e,d,i){
+        this.props.socket.emit("joinRoom", {name: this.props.player.name, room: d});
     }
 
     //just keep a state of the list of rooms
@@ -30,7 +26,9 @@ class Room extends Component{
         this.setState({
             selected : name,
         });
+
         console.log(this.state.selected);
+
     }
    
     
@@ -41,9 +39,18 @@ class Room extends Component{
         
         }
         this.items =  this.props.roomlist.map((d,i)=>{
-            return <li id ={"room"+i} key = {"room"+i} onClick={(e)=>this.onClickRoom(e,d,i)}> {d} </li>
+            let color = false;
+            if(this.state.selected === d){
+                color = true;
+            }
+            return <div id ={"room"+i} key = {"room"+i} 
+            className = {color? "activeRoom room": "nonActiveRoom room"} 
+            onClick={(e)=>this.onClickRoom(e,d,i)} > 
+            {d} 
+            <button onClick={(e)=>{this.onJoin(e, d, i)}} className= {"joinButton"}> Join </button>
+            </div>
         })
-        return <ul>{this.items}</ul>
+        return <div className = {"openRooms"}>{this.items}</div>
     }
 
     render(){
@@ -52,8 +59,7 @@ class Room extends Component{
                 <div> {this.props.player.name}</div>
                  <div> Room lists </div>
                  {this.mapRooms()}
-                <button onClick={(e)=>{this.onJoin(e)}}> Join </button>
-                <button onClick={(e)=>{this.onCreate(e)}}> Create </button>
+                <button onClick={(e)=>{this.onCreate(e)}} className={"createButton"} > Create </button>
             </div>
     }
 

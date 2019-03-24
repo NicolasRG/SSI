@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import "../stylesheets/Container.css";
 //import react components
 import InShip from "./InShip.js";
+
+import logo from '../imgs/logo.svg';
 import OpenRoomView from "./OpenRoomView.js";
 import Rooms from "./Rooms.js";
 import WaitingRoom from "./WaitingRoom.js";
@@ -25,6 +27,7 @@ class Container extends Component {
   //make this chronological based on the the stage of creating game
   componentDidMount() {
     this.props.socket.on("onPlayerInit", e => {
+      console.log(e.itter);
       this.setState({
         player: e.player,
         stage: "join_room",
@@ -109,7 +112,12 @@ class Container extends Component {
 
   render() {
     const activeScreen = this.gameStage();
-    return <div id="Container">{activeScreen}</div>;
+    return <div id="Container">
+    <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+        </header>
+    {activeScreen}
+    </div>;
   }
 }
 

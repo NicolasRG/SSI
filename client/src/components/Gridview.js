@@ -11,7 +11,7 @@ class Gridview extends Component {
           player: this.props.player,
           id: d.id,
           name: d.name
-        }); //can cause a ddos attack deal later
+        }); //can cause a ddos attack deal later on backend server
       };
       return <CommandAction name={d.name} onClick={click} key={d.id} />;
     });
