@@ -26,9 +26,7 @@ class Room extends Component{
         this.setState({
             selected : name,
         });
-
         console.log(this.state.selected);
-
     }
    
     

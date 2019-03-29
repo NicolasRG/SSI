@@ -1,5 +1,6 @@
 body {
-  background-color: #5cb0ff;
+  position: absolute;
+  background-color: #282c34;
   margin: 0;
   padding: 0;
   color: white; /*change this later*/
@@ -8,6 +9,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  width: 100%;
+}
+
+#root{
+ height: 100%;
+ width: 100%;
 }
 
 
