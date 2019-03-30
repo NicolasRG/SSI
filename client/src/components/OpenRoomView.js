@@ -13,8 +13,9 @@ class OpenRoomView extends Component{
 
     render(){
         return <div id = {"OpenRoomView"}>
-                <NameInput socket={this.props.socket}/>
-
+            <div className="CenteredContent">
+                   <NameInput socket={this.props.socket}/>
+             </div>      
             </div>
     }
 }

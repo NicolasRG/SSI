@@ -38,10 +38,13 @@ class NameInput extends Component{
                         value = {this.state.name}
                         onChange = {(e)=>this.onInput(e)}
                         onSubmit = {(e)=>this.onSubmitName(e)}
+                        id= "nameBox"
                         >
 
                     </input>
-                    <button onClick = {(e)=>this.onSubmitName(e)}>
+                    <button 
+                    id = "nameButton"
+                    onClick = {(e)=>this.onSubmitName(e)}>
                     Go  
                     </button>
                 </form>

@@ -17,7 +17,8 @@ class Container extends Component {
       shipMsg: "",
       cmdHolder: null,
       stage: "start_menu", // start_menu, join_room, waiting_room, game_room
-      roomlist: []
+      roomlist: [],
+      navMessage : "SSI Game"
     };
 
     this.cmdHolder = null; //may not need
@@ -115,6 +116,9 @@ class Container extends Component {
     return <div id="Container">
     <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
+          {
+            this.state.navMessage
+          }
         </header>
     {activeScreen}
     </div>;
