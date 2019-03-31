@@ -1,6 +1,19 @@
 #NameInput{
+    display: inline-block;
+    width: 100%;
 }
 
 #nameBox{
-    width:100%
+    display: inline-block;
+    width: calc(100% -75px);
+}
+
+#nameButton{
+    display: inline-block;
+    width: 75px;
+}
+
+#NameForm{
+    display: inline-block;
+    width: 100%;
 }

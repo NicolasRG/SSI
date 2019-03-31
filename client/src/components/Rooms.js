@@ -54,10 +54,10 @@ class Room extends Component{
     render(){
 
         return <div id= "Rooms">
-                <div> {this.props.player.name}</div>
-                 <div> Room lists </div>
+                <div id= "RoomsName"> {this.props.player.name}</div>
+                 <div id = "RoomListDiv"> Room lists </div>
                  {this.mapRooms()}
-                <button onClick={(e)=>{this.onCreate(e)}} className={"createButton"} > Create </button>
+                <button onClick={(e)=>{this.onCreate(e)}} id={"createButton"} > Create </button>
             </div>
     }
 

@@ -1,15 +1,12 @@
 #OpenRoomView{
     height: 100%;
     flex-grow: 1;
-    -webkit-font-smoothing: subpixel-antialiased;
+    display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .CenteredContent{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform:translate(-50%, -50%);
-    backface-visibility: hidden;
-   
+   width: 100%;
 }
 

@@ -31,7 +31,9 @@ class NameInput extends Component{
                 <div>
                     What Is Your Name
                 </div>
-                <form onSubmit={(e)=>this.onSubmitName(e)}>
+                <form onSubmit={(e)=>this.onSubmitName(e)}
+                id = {"NameForm"}
+                >
                     <input 
                         type="text" 
                         autoComplete= "off" 

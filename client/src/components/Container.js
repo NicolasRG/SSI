@@ -32,7 +32,8 @@ class Container extends Component {
       this.setState({
         player: e.player,
         stage: "join_room",
-        roomlist: e.itter
+        roomlist: e.itter,
+        navMessage : "Open Rooms" , 
       });
     });
 
