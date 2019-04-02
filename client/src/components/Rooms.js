@@ -33,7 +33,7 @@ class Room extends Component{
     mapRooms(){
         console.log(this.props.roomlist);
         if(Object.entries(this.props.roomlist).length === 0 && Object.constructor){
-            return <div> Empty </div>
+            return <div className = {"openRooms"}> Empty </div>
         
         }
         this.items =  this.props.roomlist.map((d,i)=>{
@@ -54,8 +54,10 @@ class Room extends Component{
     render(){
 
         return <div id= "Rooms">
-                <div id= "RoomsName"> {this.props.player.name}</div>
-                 <div id = "RoomListDiv"> Room lists </div>
+                <div id = "Rooms_Person_Info">
+                    <div id= "RoomsName"> {this.props.player.name}</div>
+                     <div id = "RoomListDiv"> Room lists </div>
+                 </div>
                  {this.mapRooms()}
                 <button onClick={(e)=>{this.onCreate(e)}} id={"createButton"} > Create </button>
             </div>

@@ -1,5 +1,6 @@
 #Rooms{
-    
+ background-color: grey;  
+  
 }
 
 .nonActiveRoom{
@@ -9,10 +10,10 @@
    
 }
 
-.room{
+.room{  
     font-size: .9em;
-    background-color: aquamarine;
     color: black;
+    background-color: rgb(112, 224, 187);
     text-align: left;
     text-indent: 5px;
     display: flex;
@@ -23,7 +24,9 @@
 
 .openRooms{
     border: 1px dotted white;
-    width: 100%;       
+    width: 100%;
+    background-color: aquamarine;   
+    height: 88%;    
 }
 
 .joinButton{
@@ -33,4 +36,9 @@
 
 .createButton{
     width: 100%;
+    height: 5%
+}
+
+#Rooms_Person_Info{
+    height: 7%;
 }
