@@ -7,6 +7,9 @@ class Room extends Component{
         this.mapRooms = this.mapRooms.bind(this);
         this.state = {
             selected: null,
+            roomsHeight : null,
+            roomsWidth : null,
+            loaded : false,
         }
         this.items = null;
     }
@@ -29,11 +32,42 @@ class Room extends Component{
         console.log(this.state.selected);
     }
    
+    componentDidMount(){
+        console.log(document.getElementById("Rooms"), "carb");
+        const roomDiv = document.getElementById("Rooms");
+        const height =  Math.floor(roomDiv.clientHeight*.85) - 20;
+        const width = roomDiv.clientWidth - 20;
+        this.setState({
+                roomsHeight :  height,
+                roomsWidth :  width,
+                loaded : true,
+        });
+
+    }
     
     mapRooms(){
+        if(this.state.loaded === false){
+           return <div > Loading </div>
+        }
         console.log(this.props.roomlist);
+        //get size of the div
+        /*const roomDiv = document.getElementById("Rooms");
+        const height =  Math.floor(roomDiv.clientHeight*.85) - 20;
+        const width = roomDiv.clientWidth - 20;
+        */
+
+        const openRoomsStyle ={
+            border: "1px dotted white",
+            //width : "calc(100% - 20px)",
+            width: this.state.roomsWidth+"px",
+            backgroundColor: "rgb(19, 111, 187)",   
+            height: "calc(85% - 20px)",//change this to be js calculation, not css
+            height: this.state.roomsHeight+"px",
+            margin: "10px",
+        }
+
         if(Object.entries(this.props.roomlist).length === 0 && Object.constructor){
-            return <div className = {"openRooms"}> Empty </div>
+            return <div className = {"openRooms"} style = {openRoomsStyle}> Empty </div>
         
         }
         this.items =  this.props.roomlist.map((d,i)=>{
@@ -48,7 +82,9 @@ class Room extends Component{
             <button onClick={(e)=>{this.onJoin(e, d, i)}} className= {"joinButton"}> Join </button>
             </div>
         })
-        return <div className = {"openRooms"}>{this.items}</div>
+        //generate style 
+        return <div className = {"openRooms"} style={openRoomsStyle} >
+            {this.items}</div>
     }
 
     render(){
