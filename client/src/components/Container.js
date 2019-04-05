@@ -116,10 +116,10 @@ class Container extends Component {
     const activeScreen = this.gameStage();
     return <div id="Container">
     <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           {
             this.state.navMessage
           }
+           <img src={logo} className="App-logo" alt="logo" />
         </header>
     {activeScreen}
     </div>;

@@ -1,12 +1,15 @@
 import React, {Component} from "react";
 import '../stylesheets/NameInput.css';
+import DynamicButton from  './DynamicButton.js';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 class NameInput extends Component{
 
     constructor(props){
         super(props);
         this.state = {
-            name:""
+            name:"",
+            showButton : false
         }
     }
 
@@ -16,22 +19,28 @@ class NameInput extends Component{
     }
 
     onInput(e){
-        
         if (e.keyCode === 13) {
           e.preventDefault();
-          this.onSubmitName();
+          //this.onSubmitName();
         }
+        console.log(typeof e.target.value)
+        let show = true;
+
+        if(e.target.value.length === 0){
+            show = false;}
         this.setState({
             name: e.target.value,
-        })
+            showButton : show});
+
+        
     }
 
     render(){
         return <div id = {"NameInput"}>
-                <div>
+                <div id = {"NameTitle"}>
                     What Is Your Name
                 </div>
-                <form onSubmit={(e)=>this.onSubmitName(e)}
+                <form onSubmit={(e)=>e.preventDefault()}
                 id = {"NameForm"}
                 >
                     <input 
@@ -39,16 +48,31 @@ class NameInput extends Component{
                         autoComplete= "off" 
                         value = {this.state.name}
                         onChange = {(e)=>this.onInput(e)}
-                        onSubmit = {(e)=>this.onSubmitName(e)}
+                        //onSubmit = {(e)=>this.onSubmitName(e)}
                         id= "nameBox"
                         >
 
                     </input>
-                    <button 
-                    id = "nameButton"
-                    onClick = {(e)=>this.onSubmitName(e)}>
-                    Go  
-                    </button>
+                <CSSTransitionGroup
+                    transitionName="NameButton"
+                    transitionAppear={true}
+                    transitionAppearTimeout={500}
+                    transitionEnter={false}
+                    transitionLeave={false}
+                >    
+                 {<DynamicButton
+                    style= {{       
+                    "width":"100%",
+                    "backgroundColor": "rgba(75,75,75)",
+                    "height" : "7vmin",
+                    "lineHeight" : "2",
+                    }}
+                    content = "GO!"
+                    onClick = {(e)=>this.onSubmitName(e)}
+                    //ButtonId = {this.state.showButton ? "NameButtonActive": "NameButtonNonActive"}
+                    >
+                   </DynamicButton>}
+                </CSSTransitionGroup>
                 </form>
 
             </div>

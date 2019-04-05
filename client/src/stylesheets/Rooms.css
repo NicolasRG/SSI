@@ -1,9 +1,10 @@
 #Rooms{
- background-color: grey;  
+ background-color: rgba(112,112,112, .50);  
   flex-grow: 1;
 }
 
-.nonActiveRoom{
+
+#RoomsName{
 }
 
 .activeRoom{
@@ -33,7 +34,7 @@
 
 #createButton{
     width: 100%;
-    height: 5%
+    height: 5%;
 }
 
 #Rooms_Person_Info{

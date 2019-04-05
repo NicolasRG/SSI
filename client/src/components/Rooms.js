@@ -12,6 +12,7 @@ class Room extends Component{
             loaded : false,
         }
         this.items = null;
+        this.calcRoomDims = this.calcRoomDims.bind(this);;
     }
 
     
@@ -34,6 +35,15 @@ class Room extends Component{
    
     componentDidMount(){
         console.log(document.getElementById("Rooms"), "carb");
+        this.calcRoomDims();
+        window.addEventListener("resize", this.calcRoomDims);
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener("resize", this.calcRoomDims);
+    }
+
+    calcRoomDims(){
         const roomDiv = document.getElementById("Rooms");
         const height =  Math.floor(roomDiv.clientHeight*.85) - 20;
         const width = roomDiv.clientWidth - 20;
@@ -42,7 +52,6 @@ class Room extends Component{
                 roomsWidth :  width,
                 loaded : true,
         });
-
     }
     
     mapRooms(){
@@ -61,7 +70,7 @@ class Room extends Component{
             //width : "calc(100% - 20px)",
             width: this.state.roomsWidth+"px",
             backgroundColor: "rgb(19, 111, 187)",   
-            height: "calc(85% - 20px)",//change this to be js calculation, not css
+            //height: "calc(85% - 20px)",//change this to be js calculation, not css
             height: this.state.roomsHeight+"px",
             margin: "10px",
         }
