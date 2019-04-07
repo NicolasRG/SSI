@@ -2,7 +2,8 @@ import React, {Component} from "react";
 import '../stylesheets/NameInput.css';
 import DynamicButton from  './DynamicButton.js';
 //import { CSSTransition } from 'react-transition-group';
-import { CSSTransition } from 'react-transition-group';
+
+import ButtonCSS from  './ButtonCSS.js';
 
 class NameInput extends Component{
 
@@ -16,6 +17,9 @@ class NameInput extends Component{
 
     onSubmitName(e){
         e.preventDefault();
+        if(!this.state.showButton){
+            return;
+        }
         this.props.socket.emit("nameSubmit", {name: this.state.name});
     }
 
@@ -54,25 +58,27 @@ class NameInput extends Component{
                         >
 
                     </input>
-                            <CSSTransition
-                                classNames="NameButton"
-                                timeout={500}
-                                unmountOnExit
-                                in={this.state.showButton}
-                                >    
-                                <DynamicButton
-                                style= {{       
-                                "width":"100%",
-                                "backgroundColor": "rgba(75,75,75)",
-                                "height" : "7vmin",
-                                "lineHeight" : "2",
-                                }}
-                                content = "GO!"
-                                onClick = {(e)=>this.onSubmitName(e)}
-                                //ButtonId = {this.state.showButton ? "NameButtonActive": "NameButtonNonActive"}
-                                >
-                            </DynamicButton>
-                        </CSSTransition>   
+                    <ButtonCSS showButton = {this.state.showButton}
+                        baseStyle = {{
+                            "opacity":"0",
+                            "pointer-events": "none",
+                        }}
+                        nameOnKeyFrame = {"show"}
+                        nameOffKeyFrame = {"unShow"}
+                        duration = {".5s"}
+                    >     
+                        <DynamicButton
+                            style= {{       
+                            "width":"100%",
+                            "backgroundColor": "rgba(75,75,75)",
+                            "height" : "7vmin",
+                            "lineHeight" : "2",
+                            }}
+                            content = "GO!"
+                            onClick = {(e)=>this.onSubmitName(e)}
+                        >
+                        </DynamicButton>   
+                    </ButtonCSS>    
                 </form>
 
             </div>
