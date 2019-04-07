@@ -66,13 +66,9 @@ class Room extends Component{
         */
 
         const openRoomsStyle ={
-            border: "1px dotted white",
-            //width : "calc(100% - 20px)",
             width: this.state.roomsWidth+"px",
-            backgroundColor: "rgb(19, 111, 187)",   
             //height: "calc(85% - 20px)",//change this to be js calculation, not css
             height: this.state.roomsHeight+"px",
-            margin: "10px",
         }
 
         if(Object.entries(this.props.roomlist).length === 0 && Object.constructor){

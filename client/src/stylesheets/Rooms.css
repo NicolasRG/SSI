@@ -12,23 +12,26 @@
 }
 
 .room{  
-    font-size: .9em;
-    color: black;
-    background-color: rgb(112, 224, 187);
+    font-size: 3vh;
+    color: white;
+    background-color: rgb(115, 115, 115);
     text-align: left;
     text-indent: 5px;
     display: flex;
     justify-content: space-between;
     margin-top: 2px;
     margin-bottom: 2px;
+    height: 5vh;
 }
 
 .openRooms{
-  
+  border: 1px dotted white;
+  background-color: rgba(47, 144, 255, 0.5);
+  margin: 10px;
 }
 
 .joinButton{
-    height: 50%;
+    height: 100%;
     overflow: hidden;
 }
 
