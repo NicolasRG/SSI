@@ -1,7 +1,8 @@
 import React, {Component} from "react";
 import '../stylesheets/NameInput.css';
 import DynamicButton from  './DynamicButton.js';
-import { CSSTransitionGroup } from 'react-transition-group';
+//import { CSSTransition } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 
 class NameInput extends Component{
 
@@ -53,26 +54,25 @@ class NameInput extends Component{
                         >
 
                     </input>
-                <CSSTransitionGroup
-                    transitionName="NameButton"
-                    transitionAppear={true}
-                    transitionAppearTimeout={500}
-                    transitionEnter={false}
-                    transitionLeave={false}
-                >    
-                 {<DynamicButton
-                    style= {{       
-                    "width":"100%",
-                    "backgroundColor": "rgba(75,75,75)",
-                    "height" : "7vmin",
-                    "lineHeight" : "2",
-                    }}
-                    content = "GO!"
-                    onClick = {(e)=>this.onSubmitName(e)}
-                    //ButtonId = {this.state.showButton ? "NameButtonActive": "NameButtonNonActive"}
-                    >
-                   </DynamicButton>}
-                </CSSTransitionGroup>
+                            <CSSTransition
+                                classNames="NameButton"
+                                timeout={500}
+                                unmountOnExit
+                                in={this.state.showButton}
+                                >    
+                                <DynamicButton
+                                style= {{       
+                                "width":"100%",
+                                "backgroundColor": "rgba(75,75,75)",
+                                "height" : "7vmin",
+                                "lineHeight" : "2",
+                                }}
+                                content = "GO!"
+                                onClick = {(e)=>this.onSubmitName(e)}
+                                //ButtonId = {this.state.showButton ? "NameButtonActive": "NameButtonNonActive"}
+                                >
+                            </DynamicButton>
+                        </CSSTransition>   
                 </form>
 
             </div>

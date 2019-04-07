@@ -5,7 +5,7 @@ import openSocket from 'socket.io-client';
 import Container from './Container.js'
 
 //socket.io client
-const socket = openSocket( "http://192.168.1.8:80");
+const socket = openSocket( "http://192.168.86.115:80");
 class App extends Component {
   constructor(props){
     super(props);

@@ -3,7 +3,7 @@ import "../stylesheets/Container.css";
 //import react components
 import InShip from "./InShip.js";
 
-import logo from '../imgs/logo.svg';
+//import logo from '../imgs/logo.svg';
 import OpenRoomView from "./OpenRoomView.js";
 import Rooms from "./Rooms.js";
 import WaitingRoom from "./WaitingRoom.js";
@@ -119,7 +119,6 @@ class Container extends Component {
           {
             this.state.navMessage
           }
-           <img src={logo} className="App-logo" alt="logo" />
         </header>
     {activeScreen}
     </div>;
