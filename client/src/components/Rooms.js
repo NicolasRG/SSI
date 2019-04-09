@@ -34,7 +34,6 @@ class Room extends Component{
     }
    
     componentDidMount(){
-        console.log(document.getElementById("Rooms"), "carb");
         this.calcRoomDims();
         window.addEventListener("resize", this.calcRoomDims);
     }
@@ -61,8 +60,8 @@ class Room extends Component{
         console.log(this.props.roomlist);
         //get size of the div
         /*const roomDiv = document.getElementById("Rooms");
-        const height =  Math.floor(roomDiv.clientHeight*.85) - 20;
-        const width = roomDiv.clientWidth - 20;
+          const height =  Math.floor(roomDiv.clientHeight*.85) - 20;
+          const width = roomDiv.clientWidth - 20;
         */
 
         const openRoomsStyle ={

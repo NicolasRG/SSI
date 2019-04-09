@@ -3,6 +3,7 @@ import '../stylesheets/App.css';
 import openSocket from 'socket.io-client';
 //import different react components
 import Container from './Container.js'
+import AnimatedBackground from './AnimatedBackground.js';
 
 //socket.io client
 const socket = openSocket( "http://192.168.1.8:80");
@@ -21,9 +22,12 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <Container socket = {this.state.socket}/>
-      </div>
+       
+        <div className="App">
+          <AnimatedBackground>
+            </AnimatedBackground>
+          <Container socket = {this.state.socket}/>
+        </div>
     );
   }
 }
