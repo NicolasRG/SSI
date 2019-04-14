@@ -154,15 +154,15 @@ const initBuffers=(gl)=>{
                 new Float32Array(positions),
                 gl.STATIC_DRAW);
 
-  // Now set up the colors for the vertices
+  /*// Now set up the colors for the vertices
 
   const faceColors = [
     [1.0,  1.0,  1.0,  1.0],    // Front face: white
-    [1.0,  0.0,  0.0,  1.0],    // Back face: red
-    [0.0,  1.0,  0.0,  1.0],    // Top face: green
-    [0.0,  0.0,  1.0,  1.0],    // Bottom face: blue
-    [1.0,  1.0,  0.0,  1.0],    // Right face: yellow
-    [1.0,  0.0,  1.0,  1.0],    // Left face: purple
+    [1.0,  1.0,  1.0,  1.0],    // Back face: red
+    [1.0,  1.0,  1.0,  1.0],    // Top face: green
+    [1.0,  1.0,  1.0,  1.0],    // Bottom face: blue
+    [1.0,  1.0,  1.0,  1.0],    // Right face: yellow
+    [1.0,  1.0,  1.0,  1.0],    // Left face: purple
   ];
 
   // Convert the array of colors into a table for all the vertices.
@@ -179,7 +179,7 @@ const initBuffers=(gl)=>{
   const colorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-
+*/
    // Build the element array buffer; this specifies the indices
   // into the vertex arrays for each face's vertices.
 
@@ -206,7 +206,7 @@ const initBuffers=(gl)=>{
 
     return {
         position: positionBuffer,
-        color: colorBuffer,
+        //color: colorBuffer,
         indices: indexBuffer,
     };
 }
@@ -260,7 +260,7 @@ const drawScene=(gl, programInfo, buffers, delta)=>{
 
     glm.mat4.rotate(modelViewMatrix,  // destination matrix
                 modelViewMatrix,  // matrix to rotate
-                cubeRotation * .7,// amount to rotate in radians
+                cubeRotation,// amount to rotate in radians
                 [0, 1, 0]);       // axis to rotate around (X)          
                      
   
@@ -285,7 +285,7 @@ const drawScene=(gl, programInfo, buffers, delta)=>{
           programInfo.attribLocations.vertexPosition);
     }
 
-    // Tell WebGL how to pull out the colors from the color buffer
+    /*// Tell WebGL how to pull out the colors from the color buffer
     // into the vertexColor attribute.
     {
         const numComponents = 4;
@@ -307,7 +307,7 @@ const drawScene=(gl, programInfo, buffers, delta)=>{
       // Tell WebGL which indices to use to index the vertices
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
 
-
+*/
     // Tell WebGL to use our program when drawing
   
     gl.useProgram(programInfo.program);
@@ -332,7 +332,7 @@ const drawScene=(gl, programInfo, buffers, delta)=>{
 
       // Update the rotation for the next draw
 
-        cubeRotation += delta;
+        //cubeRotation += delta;
 
 }
 
