@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../stylesheets/App.css';
 import openSocket from 'socket.io-client';
 //import different react components
-import Container from './Container.js'
+//import Container from './Container.js'
 import AnimatedBackground from './AnimatedBackground.js';
 
 //socket.io client

@@ -40,7 +40,22 @@ const setUniforms=(gl, programInfo, object)=>{
                 offset);
             gl.enableVertexAttribArray(
                 programInfo.attribLocations.vertexColor);
-        }
+        };
+
+         // Turn on the teccord attribute
+        gl.enableVertexAttribArray(programInfo.attribLocations.texcoordLocation);
+
+        // Bind the position buffer.
+        gl.bindBuffer(gl.ARRAY_BUFFER, object.texbuffer);
+
+        // Tell the position attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+        var size = 2;          // 2 components per iteration
+        var type = gl.FLOAT;   // the data is 32bit floats
+        var normalize = false; // don't normalize the data
+        var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+        var offset = 0;        // start at the beginning of the buffer
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.texcoordLocation, size, type, normalize, stride, offset);
 
        // Set the shader uniforms
        gl.uniformMatrix4fv(
@@ -61,6 +76,8 @@ const createViewProjectionMatrix =(projectionMatrix, cameraMatrix)=>{
 
     return viewProjectionMatrix;
 }
+
+
 
 
 export {setUniforms, createViewProjectionMatrix}

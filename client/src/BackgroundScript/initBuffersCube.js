@@ -1,5 +1,5 @@
 
-const initSquareBuffers=(gl)=>{
+const initCubeBuffers=(gl)=>{
     // Create a buffer for the square's positions.
 
   const positionBuffer = gl.createBuffer();
@@ -105,15 +105,67 @@ const initSquareBuffers=(gl)=>{
     
   const colorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);    
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW); 
+  
+  //create  buffer for texcoords.
+  const coordst = [
+    // left column front
+    0, 0,
+    0, 1,
+    1, 0,
+    0, 1,
+    1, 1,
+    1, 0,
+     // left column front
+     0, 0,
+     0, 1,
+     1, 0,
+     0, 1,
+     1, 1,
+     1, 0,
+      // left column front
+    0, 0,
+    0, 1,
+    1, 0,
+    0, 1,
+    1, 1,
+    1, 0,
+     // left column front
+     0, 0,
+     0, 1,
+     1, 0,
+     0, 1,
+     1, 1,
+     1, 0,
+      // left column front
+    0, 0,
+    0, 1,
+    1, 0,
+    0, 1,
+    1, 1,
+    1, 0,
+     // left column front
+     0, 0,
+     0, 1,
+     1, 0,
+     0, 1,
+     1, 1,
+     1, 0,];
+
+     let texcoords = gl.createBuffer();
+     gl.bindBuffer(gl.ARRAY_BUFFER, texcoords);
+     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(coordst), gl.STATIC_DRAW);
 
     return {
         position: positionBuffer,
         indices: indexBuffer,
         color: colorBuffer,
+        texbuffer : texcoords,
         translate : [-0.0, 0.0, -0.0],
         axisRotate : [0, 0, 0],
     };
 }
 
-export {initSquareBuffers}
+
+
+export {initCubeBuffers}
