@@ -12,8 +12,9 @@ const glm = require('gl-matrix');
 let then = 0;
 let cubeRotation = .1;
 let objects = [];
-let texture;
-let tex1, tex2 = null;
+let texture, texture1, texture2;
+
+let tex1, tex2 = false;
   
 class AnimatedBackground extends Component{
     constructor(props){
@@ -46,10 +47,13 @@ class AnimatedBackground extends Component{
         const shaderProgram = initShaderProgram(this.gl, vsSource, fsSource);
 
         texture = this.gl.createTexture();
+        texture1 = this.gl.createTexture();
+        texture2 =this.gl.createTexture();
         this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
         // Fill the texture with a 1x1 blue pixel.
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE,
-                      new Uint8Array([0, 255, 0, 255]));
+                      new Uint8Array([0, 0, 255, 255]));
+
 
         var image1 = new Image();
         var image2 = new Image();
@@ -62,7 +66,7 @@ class AnimatedBackground extends Component{
 
         //image.src = img;
         image1.addEventListener('load', ()=>{
-        tex1 = image1;    
+            tex1 = image1;    
         /*this.gl.bindTexture( this.gl.TEXTURE_2D, texture);
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image);
         this.gl.generateMipmap(this.gl.TEXTURE_2D);*/
@@ -93,6 +97,11 @@ class AnimatedBackground extends Component{
         objects.push(initCubeBuffers(this.gl));
         objects.push(initCubeBuffers(this.gl));
         objects.push(initCubeBuffers(this.gl));
+        
+        objects.forEach(element => {
+            console.log(element.texid);
+        });
+
         requestAnimationFrame(this.renderBackground);
 
     }
@@ -211,7 +220,7 @@ const drawScene=(gl, programInfo, delta)=>{
                 glm.mat4.multiply(u_worldViewProjection, viewProjectionMatrix, modelViewMatrix);                 
                 d.u_worldViewProjection = u_worldViewProjection; 
                 
-                setUniforms(gl, programInfo, d);
+                setUniforms(gl, programInfo, d, tex1, tex2, texture1, texture2);
         
                 {
                 const vertexCount = 36;

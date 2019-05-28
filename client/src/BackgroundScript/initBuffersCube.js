@@ -163,6 +163,7 @@ const initCubeBuffers=(gl)=>{
         texbuffer : texcoords,
         translate : [-0.0, 0.0, -0.0],
         axisRotate : [0, 0, 0],
+        texid: Math.floor(Math.random() * Math.floor(2)),
     };
 }
 
