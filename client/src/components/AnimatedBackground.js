@@ -67,13 +67,16 @@ class AnimatedBackground extends Component{
         //image.src = img;
         image1.addEventListener('load', ()=>{
             tex1 = image1;    
-        /*this.gl.bindTexture( this.gl.TEXTURE_2D, texture);
-        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image);
-        this.gl.generateMipmap(this.gl.TEXTURE_2D);*/
+            this.gl.bindTexture( this.gl.TEXTURE_2D, texture1);
+            this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, tex1);
+            this.gl.generateMipmap(this.gl.TEXTURE_2D);
         });
 
         image2.addEventListener('load', ()=>{
-            tex2 = image2;
+            tex2 = image2;    
+            this.gl.bindTexture( this.gl.TEXTURE_2D, texture2);
+            this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, tex2);
+            this.gl.generateMipmap(this.gl.TEXTURE_2D);
         });
 
 

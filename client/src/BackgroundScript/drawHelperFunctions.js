@@ -53,12 +53,12 @@ const setUniforms=(gl, programInfo, object, tex1, tex2, texture1, texture2, )=>{
             if(object.texid === 1 ){
                 //ok so thats expensive
                 gl.bindTexture( gl.TEXTURE_2D, texture1);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tex1);
-                gl.generateMipmap(gl.TEXTURE_2D);
+                //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tex1);
+                //gl.generateMipmap(gl.TEXTURE_2D);
             }else{
                 gl.bindTexture( gl.TEXTURE_2D, texture2);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tex2);
-                gl.generateMipmap(gl.TEXTURE_2D);
+                //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tex2);
+                //gl.generateMipmap(gl.TEXTURE_2D);
 
             }
         }
