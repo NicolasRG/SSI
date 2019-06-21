@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../stylesheets/Rooms.css';
+import DynamicButton from './DynamicButton';
 
 class Room extends Component{
     constructor(props){
@@ -99,7 +100,15 @@ class Room extends Component{
                      <div id = "RoomListDiv"> Room lists </div>
                  </div>
                  {this.mapRooms()}
-                <button onClick={(e)=>{this.onCreate(e)}} id={"createButton"} > Create </button>
+                {/*<button onClick={(e)=>{this.onCreate(e)}} id={"createButton"} > Create </button>*/}
+                    <DynamicButton
+                        content  = "Create"
+                        ButtonId = "createButton"
+                        onClick ={(e)=>{this.onCreate(e)}}
+                        style = {{
+                        }}
+
+                    />
             </div>
     }
 

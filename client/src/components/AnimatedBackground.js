@@ -113,7 +113,7 @@ class AnimatedBackground extends Component{
     
         drawScene(this.gl, this.programInfo, delta);
         //this.gl.viewport(0,0, this.gl.canvas.width, this.gl.canvas.height);
-        requestAnimationFrame(this.renderBackground);
+        //requestAnimationFrame(this.renderBackground);
       }
 
     getComputedStyle(){
@@ -189,12 +189,12 @@ const drawScene=(gl, programInfo, delta)=>{
    
    
 
-    const downDelta =  -.25*((cubeRotation) % 10);
+    //const downDelta =  -.25*((cubeRotation) % 10);
     //create three different squares that rotate 
     objects.forEach((d,i)=>{
                 //----------------- Where Object Personal Properties are at -------------------------------------------
                 const xPos = -8.0 + (3*i);
-                const down = downDelta + ((i - 3)**2)+10;        
+                //const down = downDelta + ((i - 3)**2)+10;        
                 d.translate = [xPos, 0.0, -0.0];
                 d.axisRotate =[0,0,0];
                 d.axisRotate[i] = 1;
