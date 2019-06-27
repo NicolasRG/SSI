@@ -3,15 +3,20 @@
 }
 
 .waiting_room_players_list{
-    background-color: rgba(47, 144, 255, 0.5);
-    position: relative;
-    height: 100%;
-    top:0px;
-    bottom: 0px;
+    background-color: rgba(47, 144, 255, 0.1);
+    position: absolute;
+    height: 70%;
+    width : 100%;
+    top:20%;
 }
 
 .waiting_room_button_list{
     position: absolute;
     bottom: 0px;
     width: 100%;
+}
+
+.player_in_waiting_room{
+    background-color: rgba(47, 144, 255, .8);
+    margin-bottom: 2px;
 }

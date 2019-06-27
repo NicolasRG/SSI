@@ -24,14 +24,15 @@ class WaitingRoom extends Component{
         this.props.socket.emit("getPrePlayerList");
     }
 
+
     render(){
         return <div id="WaitingRoom">
-                    <div>
+                    <div id = "WaitingRoomTitle">
                         Waiting on everyone to join
                     </div>
                     <div className={"waiting_room_players_list"}>
                         {this.props.waitinglist.map((d, i)=>{
-                            return <div> {d + "\n"}</div>
+                            return <div className = {"player_in_waiting_room"}> {d + "\n"}</div>
                         })}           
                     </div>
                     <div className = {"waiting_room_button_list"}>
