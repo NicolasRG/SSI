@@ -16,13 +16,15 @@ class ButtonCSS extends Component{
             this.style = {
                 "animation-name": ""+nextProps.nameOnKeyFrame,
                 "animation-duration" : ".5s",
-                "animation-fill-mode": nextProps.duration, 
+                "animation-fill-mode": nextProps.duration,
+                "cursor": "pointer", 
             }
         }else{
             this.style = {
                 "animation-name" : ""+nextProps.nameOffKeyFrame,
                 "animation-fill-mode" : "forwards",
                 "animation-duration" : nextProps.duration,
+                "cursor": "cursor",
             }
         }
     }

@@ -109,7 +109,7 @@ io.on('connection', (socket)=>{
    
 })
 
-//figure out how to dimplement this 
+//figure out how to implement this 
 const onNewPlayerConnect=(socket, newplayer, shipKey)=>{
     console.log("New player "+ newplayer.name +" added ! \n \t Added to ship : "+ shipKey);
     
@@ -169,6 +169,15 @@ const onNewPlayerConnect=(socket, newplayer, shipKey)=>{
         console.log("Generate a command");
         //tship.commandAssigner();
         shipMap.get(shipKey).publicCreateCommand();
+    });
+    /**
+     * 
+     */
+    socket.on("getPrePlayerList", (e)=>{
+        console.log("tried to get pre player list");
+        socket.emit("prePlayerList",{
+            list:shipMap.get(shipKey).getPrePlayerList(),
+        })
     });
     
 }

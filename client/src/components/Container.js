@@ -18,6 +18,7 @@ class Container extends Component {
       cmdHolder: null,
       stage: "start_menu", // start_menu, join_room, waiting_room, game_room
       roomlist: [],
+      waitinglist: [],
       navMessage : "SSI Game"
     };
 
@@ -40,14 +41,16 @@ class Container extends Component {
     this.props.socket.on("onRoomInit", e => {
       this.setState({
         stage: "waiting_room",
-        player: e.player
+        player: e.player,
+        navMessage : "Waiting Room" , 
       });
     });
 
     this.props.socket.on("onGameInit", d => {
       this.setState({
         player: d.playerState,
-        stage: "game_room"
+        stage: "game_room",
+        navMessage : "In Play" , 
       });
 
       console.log(d.playerState);
@@ -58,6 +61,16 @@ class Container extends Component {
         shipMsg: d.msg
       });
     });
+
+    /**
+     * Litsener to update the update the list of user in the waiting room 
+     */
+    this.props.socket.on("prePlayerList",(d)=>{
+      console.log(d);
+      this.setState({
+        waitinglist : d.list, 
+      })
+    })
 
     /*this listener is essentially hidden, it just lets the client know that its waiting on the 
         correct move to be done.
@@ -105,7 +118,7 @@ class Container extends Component {
       );
     } else if (this.state.stage === "waiting_room") {
       return (
-        <WaitingRoom socket={this.props.socket} player={this.state.player} />
+        <WaitingRoom socket={this.props.socket} player={this.state.player}  waitinglist ={this.state.waitinglist}/>
       );
     } else if (this.state.stage === "game_room") {
       return <InShip socket={this.props.socket} player={this.state.player} />;

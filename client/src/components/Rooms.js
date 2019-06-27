@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../stylesheets/Rooms.css';
+import '../stylesheets/Button.css';
 import DynamicButton from './DynamicButton';
 
 class Room extends Component{
@@ -67,7 +68,6 @@ class Room extends Component{
 
         const openRoomsStyle ={
             width: this.state.roomsWidth+"px",
-            //height: "calc(85% - 20px)",//change this to be js calculation, not css
             height: this.state.roomsHeight+"px",
         }
 
@@ -83,8 +83,11 @@ class Room extends Component{
             return <div id ={"room"+i} key = {"room"+i} 
             className = {color? "activeRoom room": "nonActiveRoom room"} 
             onClick={(e)=>this.onClickRoom(e,d,i)} > 
-            {d} 
-            <button onClick={(e)=>{this.onJoin(e, d, i)}} className= {"joinButton"}> Join </button>
+            {d}
+            <DynamicButton content="join"
+                onClick = {(e)=>{this.onJoin(e,d,i)}} 
+                class = { "joinButton default_button"} 
+                />
             </div>
         })
         //generate style 
@@ -105,7 +108,9 @@ class Room extends Component{
                         content  = "Create"
                         ButtonId = "createButton"
                         onClick ={(e)=>{this.onCreate(e)}}
+                        class= {"default_button"}
                         style = {{
+
                         }}
 
                     />

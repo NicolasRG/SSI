@@ -1,0 +1,9 @@
+.default_button{
+background-color: rgb(77, 77, 77);
+ border: 1px solid rgba(47, 144, 255, 0.5);
+}
+
+.default_button:hover{
+    background-color: rgb(128, 128, 128);
+    cursor: pointer;
+}

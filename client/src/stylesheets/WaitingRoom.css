@@ -1,3 +1,17 @@
 #WaitingRoom{
     
 }
+
+.waiting_room_players_list{
+    background-color: rgba(47, 144, 255, 0.5);
+    position: relative;
+    height: 100%;
+    top:0px;
+    bottom: 0px;
+}
+
+.waiting_room_button_list{
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+}

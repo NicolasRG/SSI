@@ -70,10 +70,10 @@ class NameInput extends Component{
                         <DynamicButton
                             style= {{       
                             "width":"100%",
-                            "backgroundColor": "rgba(75,75,75)",
                             "height" : "7vmin",
                             "lineHeight" : "2",
                             }}
+                            class = "default_button"
                             content = "GO!"
                             onClick = {(e)=>this.onSubmitName(e)}
                         >
