@@ -6,7 +6,7 @@ import Container from './Container.js'
 import AnimatedBackground from './AnimatedBackground.js';
 
 //socket.io client
-const socket = openSocket( "http://192.168.1.11:80");
+const socket = openSocket( "http://192.168.1.2:80");
 class App extends Component {
   constructor(props){
     super(props);

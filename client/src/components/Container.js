@@ -38,6 +38,22 @@ class Container extends Component {
       });
     });
 
+    this.props.socket.on("newRoomAdded", (e)=>{
+      console.log(e);
+      this.setState({
+        roomlist: e.itter,
+      });
+    });
+
+    /**
+     * on new room being add to the queue
+     */
+    this.props.socket.on("roomList",(d)=>{
+      this.setState({
+        roomlist: d.itter,
+      })
+    });
+
     this.props.socket.on("onRoomInit", e => {
       this.setState({
         stage: "waiting_room",
@@ -64,7 +80,7 @@ class Container extends Component {
 
     /**
      * Litsener to update the update the list of user in the waiting room 
-     */
+     */   
     this.props.socket.on("prePlayerList",(d)=>{
       console.log(d);
       this.setState({

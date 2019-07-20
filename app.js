@@ -13,7 +13,13 @@ const testAPI = require("./routes/testAPI.js");
 
 
 //middleware
-app.use(cors());  
+//app.use(cors());  
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
 
 app.use(express.static(path.join(__dirname, "client/build")));
 
@@ -100,10 +106,22 @@ io.on('connection', (socket)=>{
             return;
         }
 
+
         const tempShip = new Ship( e.room, newPlayer.socket.id, e.room, io);
         tempShip.addPlayer(newPlayer);
         shipMap.set( tempShip.roomname ,tempShip);
         console.log(tempShip, "Created ship");
+        
+        const roomnames = [];
+        shipMap.forEach((value,key)=>{
+            roomnames.push(key);
+            //console.log(key,":  this is the key");
+        });
+
+        const obj = { 
+            itter : roomnames
+         }
+        socket.emit("newRoomAdded", obj);
         onNewPlayerConnect(socket, newPlayer, tempShip.roomname);
     });
    
