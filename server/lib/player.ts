@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 const  demoNames = [
     {
         name: "Red"
@@ -13,6 +14,12 @@ const  demoNames = [
 ]
 
 class Player{
+    
+    name : String;
+    socket : any;
+    hasCommand : Number;
+    id : any ; // uuid type ?
+    card : any ; //some type of object
     /**
      * @param {String} SocketID 
      * @param {ID} Name 
@@ -28,7 +35,7 @@ class Player{
         }
 
         this.hasCommand  = -1;
-        this.id = null;
+        this.id = uuidv4();
         this.card = null;
     }
 
@@ -42,10 +49,6 @@ class Player{
 
     setName(name){
         this.name = name;
-    }
-
-    setId(id){
-        this.id = id;
     }
 
     setCard(card){
@@ -74,4 +77,4 @@ class Player{
 
 
 }
-module.exports = Player;
+export = Player;

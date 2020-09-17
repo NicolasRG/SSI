@@ -6,6 +6,17 @@ const CommandCenter = require('./commandcenter.js');
  */
 
 class Ship {
+
+    roomname: String;
+    creator: String;
+    commandpool: Map<any, any>;
+    players : any; //should stay as a map, not an array
+    health : Number;
+    name : String;
+    inPlay : boolean;
+    io : any; //sometype of oscket object ?
+    commandInterval : any; //some type of funcion ?
+
     /**
      * 
      * @param {string} roomname 
@@ -40,9 +51,8 @@ class Ship {
         console.log(this.players);
     }
 
-    //this shoud never happen, onlty for dev purposes
+    //this shoud never happen, only for dev purposes
     removePostPlayer(Player){
-        //someArray.splice(x, 1);
         this.players.splice(Player.id, 1);
         console.log("Removed "+ Player.socket +"\n Resulting map "); 
         console.log(this.players);
@@ -151,7 +161,8 @@ class Ship {
     startGamePhase(){
         //create commandcenter to process
         const commandcenter = new CommandCenter();
-        //convert map to array
+        //TODO : KEEP AS A MAP USING A UID AS IDENTIFIER
+        //converted map to array
         const arr = [];
         this.players.forEach((value, key, map)=>{
             value.setCard(commandcenter.getCard());
@@ -168,9 +179,9 @@ class Ship {
         this.inPlay = true;
         this.io.emit("shipMsg", {msg : "Game has started"});
         this.commandInterval = setInterval(()=>{
-            console.log
             this.publicCreateCommand();
         }, 5000);
+        
         return true;
     }
     
@@ -187,4 +198,4 @@ class Ship {
 
 }
 
-module.exports = Ship;
+export = Ship;

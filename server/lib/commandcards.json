@@ -1,0 +1,106 @@
+[
+    {
+       "commands":[
+          {
+             "id":0,
+             "name":"pay the gas bill",
+             "use":false
+          },
+          {
+             "id":1,
+             "name":"center visor",
+             "use":false
+          },
+          {
+             "id":2,
+             "name":"reinforce shields",
+             "use":false
+          },
+          {
+             "id":3,
+             "name":"stop that man",
+             "use":false
+          }
+       ],
+       "checkedout":false,
+       "name":"one"
+    },
+    {
+       "commands":[
+          {
+             "id":0,
+             "name":"engage thruster",
+             "use":false
+          },
+          {
+             "id":1,
+             "name":"retract statement",
+             "use":false
+          },
+          {
+             "id":2,
+             "name":"negioate",
+             "use":false
+          },
+          {
+             "id":3,
+             "name":"redirect",
+             "use":false
+          }
+       ],
+       "checkedout":false,
+       "name":"two"
+    },
+    {
+       "commands":[
+          {
+             "id":0,
+             "name":"hammer time",
+             "use":false
+          },
+          {
+             "id":1,
+             "name":"update systems",
+             "use":false
+          },
+          {
+             "id":2,
+             "name":"mop the floors",
+             "use":false
+          },
+          {
+             "id":3,
+             "name":"kick it",
+             "use":false
+          }
+       ],
+       "checkedout":false,
+       "name":"three"
+    },
+    {
+       "commands":[
+          {
+             "id":0,
+             "name":"fire",
+             "use":false
+          },
+          {
+             "id":1,
+             "name":"fromage",
+             "use":false
+          },
+          {
+             "id":2,
+             "name":"Order take out",
+             "use":false
+          },
+          {
+             "id":3,
+             "name":"Locate boogie",
+             "use":false
+          }
+       ],
+       "checkedout":false,
+       "name":"four"
+    }
+ ]

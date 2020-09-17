@@ -3,13 +3,18 @@ const app = express();
 const path = require('path');
 const cors = require('cors');
 const router = express.Router();
-const Ship = require('./lib/ship.js');
-const Player = require('./lib/player.js');
+import Ship from './lib/ship';
+import  Player from './lib/player';
+const cookie = require('cookie');
 let io;
+
 let shipMap = new Map();
 
+//Key value pair of cookie and room info player may have been a part of
+let clientMap = new Map();
+
 //get different routes
-const testAPI = require("./routes/testAPI.js");
+//const testAPI = require("./routes/testAPI.js");
 
 
 //middleware
@@ -25,7 +30,7 @@ app.use(express.static(path.join(__dirname, "client/build")));
 
 
 //connect routes to express
-app.use('/testAPI', testAPI);
+//app.use('/testAPI', testAPI);
 
 //serve react app
 app.get("/", function(req, res) {
@@ -51,68 +56,78 @@ app.set('socketio', io);
 
 io.on('connection', (socket)=>{
     
-    //handles timingout clients
-    //setTimeout(() => socket.disconnect(true), 60000);
+
+    //create player and assign it to ship, need to find a way to pass this around
     
-    //create player and assign it to ship, test purposes only 
-    
-   let newPlayer; 
   
     /**
-     * this is the start off ever client side and assume that a name is all you need to create
+     * this is the start off every client side and assume that a name is all you need to create
      * a ship and a player
      */
     socket.on("nameSubmit",(e)=>{
+        //TODO : 
+        //detect if it players already exist, client maybe reconnecting or refreshing
+        //browser seem to want to create new cookie so will just update old details with it
+        //will try to store old room key in client side
+        const cookies = cookie.parse(socket.handshake.headers.cookie);
+        console.log(cookies);
+
+        if(!clientMap.has("ssiroom")||!isValidSessionCookie()){
+            
+        }
+
         //may need to change later on to some global map but for small use it should be fine
         const roomnames = [];
+        
         shipMap.forEach((value,key)=>{
             roomnames.push(key);
-            //console.log(key,":  this is the key");
         });
-        newPlayer = new Player(socket, e.name);
+
+        const newPlayer = new Player(socket, e.name);
+        //add to a map of all clients
+        clientMap.set(newPlayer.id, newPlayer);
+
         const obj = { 
             player : { name : newPlayer.name, 
-             card : null,
-             id : null,
              creator: null},
+            id : newPlayer.id,
             itter : roomnames
          }
 
-         console.log(obj, "sending room list");
+        console.log(obj, "sending room list");
         socket.emit('onPlayerInit',obj);
 
     });
     /**
-     * the point of this is to join a create room
+     * the point of this is to join a created room
      */
     socket.on("joinRoom", (e)=>{
-        /*if(tship == null){
-            console.log(tship.name);
-        }
-        tship.addPlayer(newPlayer);
-        onNewPlayerConnect(socket, newPlayer, newPlayer.socket.id);*/
+        const newPlayer = 
         console.log(e);
         shipMap.get(e.room).addPlayer(newPlayer);//not getting the correct room back >?
         onNewPlayerConnect(socket, newPlayer, e.room);
-    })
+    
+    });
     /**
      * create a room
      */
     socket.on("createRoom", (e)=>{
-        //implement a way to let the server assigna name based on the user names
+        //implement a way to let the server assigna name based on the user names,  switch to uuid
         if(!shipMap.get(e.name)== undefined){
-            socket.emit("createError", {msg: "somethig went wrong"});
+            socket.emit("createError", {msg: "something went wrong in create room"});
             console.log("Incorrect createroom error");
             return;
         }
-
-
+        //UI IS NOT PASSING UUID BACK
+        console.log(e);
+        const newPlayer = clientMap.get(e.id); 
         const tempShip = new Ship( e.room, newPlayer.socket.id, e.room, io);
         tempShip.addPlayer(newPlayer);
         shipMap.set( tempShip.roomname ,tempShip);
         console.log(tempShip, "Created ship");
         
         const roomnames = [];
+        
         shipMap.forEach((value,key)=>{
             roomnames.push(key);
             //console.log(key,":  this is the key");
@@ -121,8 +136,11 @@ io.on('connection', (socket)=>{
         const obj = { 
             itter : roomnames
          }
-        socket.emit("newRoomAdded", obj);
+        
+         socket.emit("newRoomAdded", obj);
+        
         onNewPlayerConnect(socket, newPlayer, tempShip.roomname);
+
     });
    
 })
@@ -139,7 +157,7 @@ const onNewPlayerConnect=(socket, newplayer, shipKey)=>{
             creator: shipMap.get(shipKey).creator}// so need  
     });
 
-    //end of ship, work on thi sas needed
+    //end of ship, work on this as needed
     socket.on('disconnect', (reason) => {
         console.log(reason + ": "+ socket.id);
         if(!shipMap.get(shipKey).inPlay){
@@ -188,6 +206,7 @@ const onNewPlayerConnect=(socket, newplayer, shipKey)=>{
         //tship.commandAssigner();
         shipMap.get(shipKey).publicCreateCommand();
     });
+
     /**
      * 
      */
@@ -201,3 +220,7 @@ const onNewPlayerConnect=(socket, newplayer, shipKey)=>{
 }
 
 //function to a list of room names
+// TODO : implement check to see if a cookie is still valid
+function isValidSessionCookie(){
+    return true;
+}
