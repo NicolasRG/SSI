@@ -27,7 +27,6 @@ class Player{
     constructor(SocketI, Name){
         this.socket = SocketI;
         
-        
         if(Name == undefined || Name == null){
             this.name = this.AssignName();
         }else{
@@ -35,7 +34,7 @@ class Player{
         }
 
         this.hasCommand  = -1;
-        this.id = uuidv4();
+        this.id = SocketI.id;
         this.card = null;
     }
 
@@ -43,7 +42,6 @@ class Player{
         //test functions to show some name that isnt just an unreadble id
     AssignName (){
         const rng = Math.floor(Math.random()*5);
-        //this.setName(demoNames[rng]);
         return demoNames[rng].name;
     }
 
@@ -71,7 +69,7 @@ class Player{
         this.hasCommand = -1;
     }
 
-    rng(size){
+    private rng(size){
         return Math.floor(Math.random()*size);
     }
 

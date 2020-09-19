@@ -18,13 +18,15 @@ class Room extends Component{
     }
 
     
-    //uhuh wtf never thoguht about creating rooms
+    //defaults to  "<usernames>'s Ship"
     onCreate(){
-        this.props.socket.emit("createRoom", {name: this.props.player, room: this.props.player.name});
+        this.props.socket.emit("CreateRoom", {name: this.props.player.name, 
+            roomName: `${this.props.player.name}'s Room`
+        });
     }
 
     onJoin(e,d,i){
-        this.props.socket.emit("joinRoom", {name: this.props.player.name, room: d});
+        this.props.socket.emit("JoinRoom", d);
     }
 
     //just keep a state of the list of rooms
@@ -61,10 +63,6 @@ class Room extends Component{
         }
         console.log(this.props.roomlist);
         //get size of the div
-        /*const roomDiv = document.getElementById("Rooms");
-          const height =  Math.floor(roomDiv.clientHeight*.85) - 20;
-          const width = roomDiv.clientWidth - 20;
-        */
 
         const openRoomsStyle ={
             width: this.state.roomsWidth+"px",
@@ -83,7 +81,7 @@ class Room extends Component{
             return <div id ={"room"+i} key = {"room"+i} 
             className = {color? "activeRoom room": "nonActiveRoom room"} 
             onClick={(e)=>this.onClickRoom(e,d,i)} > 
-            {d}
+            {d.ship}
             <DynamicButton content="join"
                 onClick = {(e)=>{this.onJoin(e,d,i)}} 
                 class = { "joinButton default_button"} 

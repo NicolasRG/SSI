@@ -2,7 +2,7 @@ import cards from './commandcards.json';
 
 class CommandCenter{
 
-    cmdCards:any ; //needs to some json type
+    cmdCards:any ; //needs to be some json type
     index : number ;
 
     constructor(){

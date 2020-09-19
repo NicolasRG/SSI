@@ -3,11 +3,16 @@ const app = express();
 const path = require('path');
 const cors = require('cors');
 const router = express.Router();
-import Ship from './lib/ship';
-import  Player from './lib/player';
+import {getLogger } from "log4js";
+import Ship from './game/ship';
+import Player from './game/player';
+import { OnPlayerInitMessage, OnValidReconnectMessage, NewRoomAddedMessage, RoomItem, OnRoomInitMessage }  from './messages/ServerSettupMessages';
+import { JoinRoomClientMessage, CreateRoomClientMessage } from './messages/ClientMessage';
 const cookie = require('cookie');
-let io;
 
+let io;
+const logger = getLogger();
+logger.level = "info";
 let shipMap = new Map();
 
 //Key value pair of cookie and room info player may have been a part of
@@ -55,107 +60,114 @@ io = require('socket.io').listen(server, {
 app.set('socketio', io);
 
 io.on('connection', (socket)=>{
+    const oldId = cookie.parse(socket.handshake.headers.cookie).io;
+    logger.info("On handshake old cookie:" + oldId);
+    logger.info("On handshake new cookie:" + socket.id);
     
+    //if client reconnects with a valid game going on update the
+    //token/player map
+    if(clientMap.has(cookie.parse(socket.handshake.headers.cookie).io)||isValidSessionCookie()){
 
-    //create player and assign it to ship, need to find a way to pass this around
-    
+        //reset client
+        const player:Player  = clientMap.get(oldId);
+        clientMap.delete(oldId);
+        clientMap.set(socket.id, player);
+
+
+        //emit valid reconnect signal 
+        const message:OnValidReconnectMessage = {
+            id : player.id,
+            player : {
+                name :player.name
+            },
+            card : player.card
+        }
+
+        socket.emit("ValidReconnect", message);
+    }
+
   
     /**
      * this is the start off every client side and assume that a name is all you need to create
      * a ship and a player
      */
     socket.on("nameSubmit",(e)=>{
-        //TODO : 
-        //detect if it players already exist, client maybe reconnecting or refreshing
-        //browser seem to want to create new cookie so will just update old details with it
-        //will try to store old room key in client side
-        const cookies = cookie.parse(socket.handshake.headers.cookie);
-        console.log(cookies);
-
-        if(!clientMap.has("ssiroom")||!isValidSessionCookie()){
-            
-        }
-
         //may need to change later on to some global map but for small use it should be fine
-        const roomnames = [];
-        
-        shipMap.forEach((value,key)=>{
-            roomnames.push(key);
-        });
+        const roomnames:Array<any> = getRoomList();
 
         const newPlayer = new Player(socket, e.name);
         //add to a map of all clients
         clientMap.set(newPlayer.id, newPlayer);
 
-        const obj = { 
-            player : { name : newPlayer.name, 
-             creator: null},
+        const message : OnPlayerInitMessage = {   
+            player : { name : newPlayer.name},
             id : newPlayer.id,
-            itter : roomnames
+            itter : roomnames       //think about changing this to just the map ?
          }
 
-        console.log(obj, "sending room list");
-        socket.emit('onPlayerInit',obj);
+        logger.info(message, "sending room list");
+        socket.emit('OnPlayerInit', message);
 
     });
+
     /**
-     * the point of this is to join a created room
+     * join a created room
      */
-    socket.on("joinRoom", (e)=>{
-        const newPlayer = 
-        console.log(e);
-        shipMap.get(e.room).addPlayer(newPlayer);//not getting the correct room back >?
-        onNewPlayerConnect(socket, newPlayer, e.room);
+    socket.on("JoinRoom", (e:JoinRoomClientMessage)=>{ 
+        const newPlayer = clientMap.get(socket.id);
+        logger.info(`Player ${newPlayer.name} joining ${e.ship}`);
+        shipMap.get(e.id).addPlayer(newPlayer);
+        onNewPlayerConnect(socket, newPlayer, e.id, false);
     
     });
     /**
      * create a room
      */
-    socket.on("createRoom", (e)=>{
+    socket.on("CreateRoom", (e:CreateRoomClientMessage)=>{
         //implement a way to let the server assigna name based on the user names,  switch to uuid
         if(!shipMap.get(e.name)== undefined){
-            socket.emit("createError", {msg: "something went wrong in create room"});
-            console.log("Incorrect createroom error");
+            socket.emit("createError", { error: true ,msg: "something went wrong in creating room"});
+            logger.info("Incorrect createroom error");
             return;
         }
-        //UI IS NOT PASSING UUID BACK
-        console.log(e);
-        const newPlayer = clientMap.get(e.id); 
-        const tempShip = new Ship( e.room, newPlayer.socket.id, e.room, io);
-        tempShip.addPlayer(newPlayer);
-        shipMap.set( tempShip.roomname ,tempShip);
-        console.log(tempShip, "Created ship");
-        
-        const roomnames = [];
-        
-        shipMap.forEach((value,key)=>{
-            roomnames.push(key);
-            //console.log(key,":  this is the key");
-        });
 
-        const obj = { 
+        const newPlayer:Player = clientMap.get(socket.id); 
+        const tempShip:Ship = new Ship( e.roomName, socket.id, io);
+        tempShip.addPlayer(newPlayer);
+        shipMap.set( tempShip.id ,tempShip);
+
+        logger.info(tempShip.id + " : Created ship");
+        
+        const roomnames = getRoomList();
+        
+
+        const message:NewRoomAddedMessage = { 
             itter : roomnames
          }
+
+         logger.info(`made message ${message}`);
+         
+         socket.emit("NewRoomAdded", message);
         
-         socket.emit("newRoomAdded", obj);
-        
-        onNewPlayerConnect(socket, newPlayer, tempShip.roomname);
+        onNewPlayerConnect(socket, newPlayer, tempShip.id, true);
 
     });
    
 })
 
-//figure out how to implement this 
-const onNewPlayerConnect=(socket, newplayer, shipKey)=>{
-    console.log("New player "+ newplayer.name +" added ! \n \t Added to ship : "+ shipKey);
+//sets up a new player connection
+const onNewPlayerConnect=(socket, newplayer : Player, shipKey:String, creator : Boolean)=>{
+    logger.info(`New player added to ship ${shipKey} : ${newplayer.name}`);
     
     //On player object being made with the ship
-    socket.emit('onRoomInit',{ 
+    const message:OnRoomInitMessage  = { 
         player : { name : newplayer.name, 
             card : null,
             id : newplayer.socket.id,
-            creator: shipMap.get(shipKey).creator}// so need  
-    });
+            isCreator : creator}
+    };
+
+    socket.emit('OnRoomInit', message);
 
     //end of ship, work on this as needed
     socket.on('disconnect', (reason) => {
@@ -219,8 +231,20 @@ const onNewPlayerConnect=(socket, newplayer, shipKey)=>{
     
 }
 
-//function to a list of room names
 // TODO : implement check to see if a cookie is still valid
 function isValidSessionCookie(){
-    return true;
+    return false;
+}
+
+function getRoomList():Array<any> {
+    
+    const roomnames:Array<RoomItem> = [];
+
+    shipMap.forEach((ship:Ship, id:string)=>{
+        const roomObj:RoomItem = {id :id, ship : ship.roomname};
+        logger.info(roomObj);
+        roomnames.push(roomObj);
+    });   
+
+    return roomnames;
 }

@@ -28,7 +28,7 @@ class Container extends Component {
 
   //make this chronological based on the the stage of creating game
   componentDidMount() {
-    this.props.socket.on("onPlayerInit", e => {
+    this.props.socket.on("OnPlayerInit", e => {
       console.log(e.itter);
       this.setState({
         player: e.player,
@@ -38,7 +38,7 @@ class Container extends Component {
       });
     });
 
-    this.props.socket.on("newRoomAdded", (e)=>{
+    this.props.socket.on("NewRoomAdded", (e)=>{
       console.log(e);
       this.setState({
         roomlist: e.itter,
@@ -46,6 +46,7 @@ class Container extends Component {
     });
 
     /**
+     * TODO : implement server side
      * on new room being add to the queue
      */
     this.props.socket.on("roomList",(d)=>{
@@ -54,7 +55,7 @@ class Container extends Component {
       })
     });
 
-    this.props.socket.on("onRoomInit", e => {
+    this.props.socket.on("OnRoomInit", e => {
       this.setState({
         stage: "waiting_room",
         player: e.player,
@@ -62,7 +63,7 @@ class Container extends Component {
       });
     });
 
-    this.props.socket.on("onGameInit", d => {
+    this.props.socket.on("OnGameInit", d => {
       this.setState({
         player: d.playerState,
         stage: "game_room",
@@ -88,9 +89,9 @@ class Container extends Component {
       })
     })
 
-    /*this listener is essentially hidden, it just lets the client know that its waiting on the 
+    /*this listener is essentially hidden, 
+      it just lets the client know that its waiting on the 
         correct move to be done.
-        will be an laert for dev purposes
         */
 
     this.props.socket.on("onPersonalCMD", d => {

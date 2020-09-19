@@ -23,8 +23,6 @@ class App extends Component {
     return (
        
         <div className="App">
-        {/* {<AnimatedBackground>
-            </AnimatedBackground>} */}
           {<Container socket = {this.state.socket}/>}
         </div>
     );

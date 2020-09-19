@@ -36,7 +36,7 @@ class WaitingRoom extends Component{
                         })}           
                     </div>
                     <div className = {"waiting_room_button_list"}>
-                        { (this.props.player.creator === this.props.player.id) && 
+                        { (this.props.player.isCreator) && 
                         <DynamicButton  
                         content = "Start Game"
                         onClick = {(e)=>this.startClick(e)}
