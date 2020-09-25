@@ -8,6 +8,9 @@ import Ship from './game/ship';
 import Player from './game/player';
 import { OnPlayerInitMessage, OnValidReconnectMessage, NewRoomAddedMessage, RoomItem, OnRoomInitMessage }  from './messages/ServerSettupMessages';
 import { JoinRoomClientMessage, CreateRoomClientMessage } from './messages/ClientMessage';
+import {createRoomEvent, joinRoomEvent, nameSubmitEvent} from './socketEvents/settupEvents';
+import { getPrePlayerList, onDisconnect } from "./socketEvents/roomEvents";
+import { onCommand } from "./socketEvents/gameEvents";
 const cookie = require('cookie');
 
 let io;
@@ -66,7 +69,7 @@ io.on('connection', (socket)=>{
     
     //if client reconnects with a valid game going on update the
     //token/player map
-    if(clientMap.has(cookie.parse(socket.handshake.headers.cookie).io)||isValidSessionCookie()){
+    if(clientMap.has(cookie.parse(socket.handshake.headers.cookie+"").io)||isValidSessionCookie()){
 
         //reset client
         const player:Player  = clientMap.get(oldId);
@@ -91,71 +94,19 @@ io.on('connection', (socket)=>{
      * this is the start off every client side and assume that a name is all you need to create
      * a ship and a player
      */
-    socket.on("nameSubmit",(e)=>{
-        //may need to change later on to some global map but for small use it should be fine
-        const roomnames:Array<any> = getRoomList();
-
-        const newPlayer = new Player(socket, e.name);
-        //add to a map of all clients
-        clientMap.set(newPlayer.id, newPlayer);
-
-        const message : OnPlayerInitMessage = {   
-            player : { name : newPlayer.name},
-            id : newPlayer.id,
-            itter : roomnames       //think about changing this to just the map ?
-         }
-
-        logger.info(message, "sending room list");
-        socket.emit('OnPlayerInit', message);
-
-    });
+    socket.on("nameSubmit", (e)=>nameSubmitEvent(e,socket, clientMap, getRoomList));
 
     /**
      * join a created room
      */
-    socket.on("JoinRoom", (e:JoinRoomClientMessage)=>{ 
-        const newPlayer = clientMap.get(socket.id);
-        logger.info(`Player ${newPlayer.name} joining ${e.ship}`);
-        shipMap.get(e.id).addPlayer(newPlayer);
-        onNewPlayerConnect(socket, newPlayer, e.id, false);
-    
-    });
+    socket.on("JoinRoom", (e)=>joinRoomEvent(e, socket, clientMap, shipMap, onNewPlayerConnect));
     /**
      * create a room
      */
-    socket.on("CreateRoom", (e:CreateRoomClientMessage)=>{
-        //implement a way to let the server assigna name based on the user names,  switch to uuid
-        if(!shipMap.get(e.name)== undefined){
-            socket.emit("createError", { error: true ,msg: "something went wrong in creating room"});
-            logger.info("Incorrect createroom error");
-            return;
-        }
+    socket.on("CreateRoom", (e:CreateRoomClientMessage)=> createRoomEvent(e, socket, io, clientMap, shipMap, getRoomList, onNewPlayerConnect));
+});
 
-        const newPlayer:Player = clientMap.get(socket.id); 
-        const tempShip:Ship = new Ship( e.roomName, socket.id, io);
-        tempShip.addPlayer(newPlayer);
-        shipMap.set( tempShip.id ,tempShip);
-
-        logger.info(tempShip.id + " : Created ship");
-        
-        const roomnames = getRoomList();
-        
-
-        const message:NewRoomAddedMessage = { 
-            itter : roomnames
-         }
-
-         logger.info(`made message ${message}`);
-         
-         socket.emit("NewRoomAdded", message);
-        
-        onNewPlayerConnect(socket, newPlayer, tempShip.id, true);
-
-    });
-   
-})
-
-//sets up a new player connection
+//sets up a new player in a room, adds listener for the rest of the game pretty much
 const onNewPlayerConnect=(socket, newplayer : Player, shipKey:String, creator : Boolean)=>{
     logger.info(`New player added to ship ${shipKey} : ${newplayer.name}`);
     
@@ -170,64 +121,18 @@ const onNewPlayerConnect=(socket, newplayer : Player, shipKey:String, creator : 
     socket.emit('OnRoomInit', message);
 
     //end of ship, work on this as needed
-    socket.on('disconnect', (reason) => {
-        console.log(reason + ": "+ socket.id);
-        if(!shipMap.get(shipKey).inPlay){
-            shipMap.get(shipKey).removePrePlayer(newplayer);
-            if(shipMap.get(shipKey).isPreEmpty()){
-                console.log("Ship is empty, will be deleted");
-                shipMap.delete(shipKey);
-                console.log( "Ship "+ shipMap.get(shipKey)); 
-            }
-        }else{
-            shipMap.get(shipKey).removePostPlayer(newplayer);
-            if(shipMap.get(shipKey).isPostEmpty()){
-                console.log("Ship is empty, will be deleted");
-                shipMap.get(shipKey).onDelete();
-                shipMap.delete(shipKey);
-                console.log( "Ship "+ shipMap.get(shipKey)); 
-            }
-        }
-      });
-
-    //test events for socketio calls
-    socket.on('hello', (e)=>{
-        io.emit('shipMsg', {msg: newplayer.name +" just joined"});
-    });
-    
-    socket.on('Rendered', (e)=>{
-        console.log("Component rendered a container " +  socket.id);
-    });
-    
-    socket.on('Command', (cmd)=>{
-        console.log(cmd);
-        io.emit('shipMsg', {msg: newplayer.name + " did action " + cmd.name});
-        //validate the move in the game
-        if(shipMap.get(shipKey).inPlay){
-            shipMap.get(shipKey).removeCommand(cmd.player, cmd.id);
-        }
-    });
+    socket.on('disconnect', (reason) => onDisconnect(reason, socket, shipMap, shipKey, newplayer));
 
     socket.on("start_game", (e)=>{
         console.log("Game has started, intialize the ship");
         shipMap.get(shipKey).startGamePhase();
     });
 
-    socket.on('dev_gen', (e)=>{
-        console.log("Generate a command");
-        //tship.commandAssigner();
-        shipMap.get(shipKey).publicCreateCommand();
-    });
+    socket.on("getPrePlayerList", (e)=>getPrePlayerList(e,socket, shipMap, shipKey));
+    
 
-    /**
-     * 
-     */
-    socket.on("getPrePlayerList", (e)=>{
-        console.log("tried to get pre player list");
-        socket.emit("prePlayerList",{
-            list:shipMap.get(shipKey).getPrePlayerList(),
-        })
-    });
+    //on getting command from client
+    socket.on('Command', (cmd)=>onCommand(cmd, io, shipMap, shipKey, newplayer));
     
 }
 
