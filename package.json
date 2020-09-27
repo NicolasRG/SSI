@@ -7,12 +7,13 @@
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/app.js",
+    "start": "tsc && node dist/app.js",
     "dev": "concurrently \"tsc -w\" \"nodemon dist/app.js\""
   },
   "author": "Nicolas Ramos Gomez",
   "license": "ISC",
   "dependencies": {
+    "typescript": "^4.0.3",
     "@types/express": "^4.17.8",
     "@types/uuid": "^8.3.0",
     "cookie": "^0.4.1",
