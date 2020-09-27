@@ -51,8 +51,8 @@ app.use(function (err, req, res, next) {
     next();
 })
 
-const server = app.listen(80);
-console.log("Running at Port 80");
+const server = app.listen(process.env.PORT);
+console.log(`Running at Port ${process.env.PORT}`);
 
 //settup socketio
 
