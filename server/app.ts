@@ -34,7 +34,7 @@ app.use(function(req, res, next) {
   });
 
 
-app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 
 //connect routes to express
@@ -42,7 +42,7 @@ app.use(express.static(path.join(__dirname, "client/build")));
 
 //serve react app
 app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+    res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 
 app.use(function (err, req, res, next) {
@@ -69,14 +69,12 @@ io.on('connection', (socket)=>{
     
     //if client reconnects with a valid game going on update the
     //token/player map
-    if(clientMap.has(cookie.parse(socket.handshake.headers.cookie+"").io)||isValidSessionCookie()){
+    if(clientMap.has(cookie.parse(socket.handshake.headers.cookie+"").io)||isValidSessionCookie(oldId)){
 
         //reset client
         const player:Player  = clientMap.get(oldId);
         clientMap.delete(oldId);
         clientMap.set(socket.id, player);
-
-
         //emit valid reconnect signal 
         const message:OnValidReconnectMessage = {
             id : player.id,
@@ -137,7 +135,10 @@ const onNewPlayerConnect=(socket, newplayer : Player, shipKey:String, creator : 
 }
 
 // TODO : implement check to see if a cookie is still valid
-function isValidSessionCookie(){
+function isValidSessionCookie(cookie:Object){
+    if(typeof cookie == "undefined"){
+        return true;
+    }
     return false;
 }
 

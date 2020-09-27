@@ -7,7 +7,7 @@
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node dist/app.js",
+    "start": "tsc && node dist/app.js && cd client && npm run build",
     "dev": "concurrently \"tsc -w\" \"nodemon dist/app.js\""
   },
   "author": "Nicolas Ramos Gomez",
