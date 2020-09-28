@@ -45,15 +45,6 @@ class Container extends Component {
       });
     });
 
-    /**
-     * TODO : implement server side
-     * on new room being add to the queue
-     */
-    this.props.socket.on("roomList",(d)=>{
-      this.setState({
-        roomlist: d.itter,
-      })
-    });
 
     this.props.socket.on("OnRoomInit", e => {
       this.setState({

@@ -19,7 +19,8 @@ class DialogBox extends Component{
                 personalMsg : d.msg,
             });
          });
- 
+         
+         //same thing lmao
          this.props.socket.on('shipMsg', (d)=>{
             this.setState({
                 shipMsg : d.msg,
@@ -30,6 +31,10 @@ class DialogBox extends Component{
             this.setState({
                     shipMsg: d.msg,
             })
+        });
+
+        this.props.socket.on('onCorrectTask', (d)=>{
+            alert("correct command!!");
         });
          
     }

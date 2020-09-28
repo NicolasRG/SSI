@@ -1,7 +1,7 @@
 import Player = require("./player");
 import {v4} from 'uuid';
 import {getLogger } from "log4js";
-import { OnGameInitMessage } from "../messages/ShipMessages";
+import { CMDMessage, OnGameInitMessage } from "../messages/ShipMessages";
 const CommandCenter = require('./commandcenter.js');
 
 const logger = getLogger();
@@ -18,8 +18,8 @@ class Ship {
     roomname: String;
     creator: String;
     commandpool: Map<any, any>;
-    players : Map<String, Player> ; //should stay as a map, not an array
-    //CURRENTLY CHANGING ALL PLAYERS STFF TO MA
+    commandmessagepool : Map<any,any>;
+    players : Map<String, Player> ;
     health : Number;
     name : String;
     inPlay : boolean;
@@ -38,10 +38,11 @@ class Ship {
         this.roomname = roomname;
         this.creator = creator;
         this.commandpool = new Map();//let command pool be a key value pair that that is mapped by the SocketID and assigned to a command ID 
+        this.commandmessagepool = new Map();
         this.players  = new Map(); 
         this.health = 100;
         this.inPlay = false;
-        console.log("New ship created");
+        logger.info("New ship created");
         this.io = IO;
         this.commandInterval = null;
         this.listOfPlayerIds = [];
@@ -116,9 +117,13 @@ class Ship {
         const cmd = this.commandpool.get(player.id)
         if(cmd !== null && cmd !== undefined){
             if(cmd.id == commandid){
-                console.log("correct !!")
+                logger.info(`Correct task!! ${player.id}`);
                 this.commandpool.delete(player.id);
+                this.removeCMDMessage(this.commandmessagepool.get(player.id));
+                logger.info(`Removed player conatining message`);
+                this.commandmessagepool.delete(player.id);
                 this.players.get(player.id).hasCommand = -1;
+                this.correctTaskMessage(player.id);
                 return true;
             }else{
                 console.log("Not the correct command", cmd, commandid);
@@ -137,21 +142,45 @@ class Ship {
         const player:Player = this.players.get(playerid);
         const cmd =  player.getCommand();
         this.commandpool.set(playerid,cmd);
-        logger.info(`Assigned ${playerid + " : " + player} with ${cmd}`);
+   
         //now tell a socket that this command has been issued
         //for test purpose tell everyone 
-        this.io.emit('onShipCmd', {msg: player.name + " has command " + cmd.name});
+        // this.io.emit('onShipCmd', {msg: player.name + " has command " + cmd.name});
         //change this to tell a random person that is not a the one it is sent to
-        this.players.get(playerid).socket.emit("onPersonalCMD",  {cmd: cmd}) //works :)
+        const msgPlayerid:String = this.rngFindAvailableMessagePlayer(playerid);
+        this.commandmessagepool.set(playerid,msgPlayerid);
+        logger.info(`Assigned ${playerid + " : " + player} with ${cmd} +\n
+        sent message to${msgPlayerid}`);
+        this.sendCMDMessage(msgPlayerid, cmd);
     }
 
-    publicCreateCommand(){
+    createCommand(){
         console.log(this.commandpool.size);
-        if(this.commandpool.size < 1){
+        if(this.commandpool.size < 1){ //this limits the size of message in the queue
             this.commandAssigner();
             return true;
         }
         return false;
+    }
+
+    sendCMDMessage(playerid:String, cmd:any){
+        const cmdMesage:CMDMessage = {
+            msg :  "task : " + cmd.name
+        } 
+
+        this.players.get(playerid).socket.emit('onShipCmd', cmdMesage); //works :)
+    }
+
+    removeCMDMessage(playerid){
+        const cmdMesage:CMDMessage = {
+            msg :  "!_!"
+        } 
+        this.players.get(playerid).socket.emit('onShipCmd', cmdMesage); 
+    }
+
+    correctTaskMessage(playerid){
+        const obj = {correct : true} ;
+        this.players.get(playerid).socket.emit('onCorrectTask', obj); 
     }
 
     /**
@@ -169,11 +198,23 @@ class Ship {
        }
     }
 
+    rngFindAvailableMessagePlayer(playerMessageForId:String){
+          //may cause an infinte  loop  :/
+       let player:Player = null;
+       while(true){
+            const key = this.rng(this.players.size);
+            player = this.players.get(key);
+            if(key !== playerMessageForId && !this.commandmessagepool.has(key)){
+                return key;
+            }
+       }
+    }
+
     //function that covers all start game intializations
     startGamePhase(){
         //create commandcenter to process
         const commandcenter = new CommandCenter();
-        //TODO : KEEP AS A MAP USING A UID AS IDENTIFIER
+        //TODO : KEEP AS A MAP USING A UID AS NA IDENTIFIER
         //converted map to array
         const arr = [];
 
@@ -199,7 +240,7 @@ class Ship {
         this.io.emit("shipMsg", {msg : "Game has started"});
 
         this.commandInterval = setInterval(()=>{
-            this.publicCreateCommand();
+            this.createCommand();
         }, 5000);
         
         return true;

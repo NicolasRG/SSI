@@ -5,3 +5,15 @@ export interface OnGameInitMessage{
         card : any
     }
 }
+
+export interface CMD{
+    playerState : {
+        name : String,
+        id : String,
+        card : any
+    }
+}
+
+export interface CMDMessage{
+    msg : String
+}

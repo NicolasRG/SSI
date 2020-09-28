@@ -8,7 +8,9 @@ logger.level = "info";
 
 export const onCommand = async (cmd:any, io:any, shipMap:Map<String, Ship>, shipKey:String, player:Player)=>{
     logger.info(cmd);
-    io.emit('shipMsg', {msg: player.name + " did action " + cmd.name});
+    
+    //io.emit('shipMsg', {msg: player.name + " did action " + cmd.name});
+    
     //validate the move in the game
     if(shipMap.get(shipKey).inPlay){
         shipMap.get(shipKey).removeCommand(cmd.player, cmd.id);

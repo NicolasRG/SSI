@@ -7,3 +7,4 @@ export interface CreateRoomClientMessage{
     name : String,
     roomName: String
 }
+

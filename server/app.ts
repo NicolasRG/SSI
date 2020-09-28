@@ -132,6 +132,9 @@ const onNewPlayerConnect=(socket, newplayer : Player, shipKey:String, creator : 
     //on getting command from client
     socket.on('Command', (cmd)=>onCommand(cmd, io, shipMap, shipKey, newplayer));
     
+    //emit to every one a new room has been made/ change to player not in an open room 
+    io.emit("NewRoomAdded", {itter : getRoomList()});
+    
 }
 
 // TODO : implement check to see if a cookie is still valid

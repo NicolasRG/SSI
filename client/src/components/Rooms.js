@@ -14,7 +14,7 @@ class Room extends Component{
             loaded : false,
         }
         this.items = null;
-        this.calcRoomDims = this.calcRoomDims.bind(this);;
+        this.calcRoomDims = this.calcRoomDims.bind(this);
     }
 
     
@@ -23,6 +23,8 @@ class Room extends Component{
         this.props.socket.emit("CreateRoom", {name: this.props.player.name, 
             roomName: `${this.props.player.name}'s Room`
         });
+
+      
     }
 
     onJoin(e,d,i){

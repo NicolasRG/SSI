@@ -17,7 +17,8 @@ class Player{
     
     name : String;
     socket : any;
-    hasCommand : Number;
+    hasCommand : Number; //chan
+    hasMessage : Number;
     id : any ; // uuid type ?
     card : any ; //some type of object
     /**
@@ -34,6 +35,7 @@ class Player{
         }
 
         this.hasCommand  = -1;
+        this.hasMessage  = -1;
         this.id = SocketI.id;
         this.card = null;
     }
