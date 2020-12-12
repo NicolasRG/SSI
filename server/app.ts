@@ -65,12 +65,12 @@ app.set('socketio', io);
 io.on('connection', (socket)=>{
     const oldId = cookie.parse(socket.handshake.headers.cookie).io;
     logger.info("On handshake old cookie:" + oldId);
-    logger.info("On handshake new cookie:" + socket.id);
+    
     
     //if client reconnects with a valid game going on update the
     //token/player map
-    if(clientMap.has(cookie.parse(socket.handshake.headers.cookie+"").io)||isValidSessionCookie(oldId)){
-
+    if( clientMap.has(cookie.parse(socket.handshake.headers.cookie+"").io) && isValidSessionCookie(oldId)){
+        logger.info("On handshake new cookie:" + socket.id);
         //reset client
         const player:Player  = clientMap.get(oldId);
         clientMap.delete(oldId);
@@ -139,8 +139,8 @@ const onNewPlayerConnect=(socket, newplayer : Player, shipKey:String, creator : 
 
 // TODO : implement check to see if a cookie is still valid
 function isValidSessionCookie(cookie:Object){
-    if(typeof cookie == "undefined"){
-        return true;
+    if(typeof cookie == undefined){
+        return false;
     }
     return false;
 }
